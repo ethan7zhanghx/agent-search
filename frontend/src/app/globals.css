@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Inter", "Inter Fallback", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  --font-head: "Montserrat", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "SF Mono", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-background: #ffffff;
+  --color-foreground: #000311;
+  --color-card: #ffffff;
+  --color-card-foreground: #000311;
+  --color-muted: #f7f8fc;
+  --color-muted-foreground: #6d707c;
+  --color-border: #e7e8ef;
+  --color-input: #dcdde7;
+  --color-primary: #000311;
+  --color-primary-foreground: #ffffff;
+  --color-accent: #6ffeff;
+  --color-accent-foreground: #000311;
+  --color-ring: #6ffeff;
+  --radius: 0.625rem;
+  --radius-sm: calc(var(--radius) * 0.75);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.3);
+}
+
+:root {
+  --querit-ink: #000311;
+  --querit-soft-ink: #272933;
+  --querit-muted: #848691;
+  --querit-line: rgba(0, 3, 17, 0.1);
+  --querit-line-strong: rgba(0, 3, 17, 0.18);
+  --querit-cyan: #6ffeff;
+  --querit-blue: #0056f5;
+  --querit-purple: #9a8bfd;
+  --querit-surface: #f7f8fc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(90deg, rgba(0, 3, 17, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(0, 3, 17, 0.03) 1px, transparent 1px),
+    #fff;
+  background-size: 48px 48px;
+  color: var(--querit-ink);
+  font-family: var(--font-inter), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--querit-cyan);
+  color: var(--querit-ink);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 3, 17, 0.18);
+  border: 3px solid #fff;
+  border-radius: 999px;
+}

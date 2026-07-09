@@ -21,7 +21,7 @@
 
 因此，当前产物应该被团队当作 **调研地图和后续工作底座**，而不是可以直接对外引用的最终结论。
 
-配套结构化文件：[benchmark_registry.json](/Users/zhanghaoxin/Documents/agent-search/benchmark-research/benchmark_registry.json)
+配套结构化文件：[benchmark_registry.json](benchmark-research/benchmark_registry.json)
 
 ## 1. 核心判断
 
@@ -424,8 +424,8 @@
 
 当前文件：
 
-- [benchmark_registry.json](/Users/zhanghaoxin/Documents/agent-search/benchmark-research/benchmark_registry.json)
-- [benchmark_report.md](/Users/zhanghaoxin/Documents/agent-search/benchmark-research/benchmark_report.md)
+- [benchmark_registry.json](benchmark-research/benchmark_registry.json)
+- [benchmark_report.md](benchmark-research/benchmark_report.md)
 
 下一步建议：
 

@@ -6,8 +6,8 @@
 
 配套文件：
 
-- 初始 registry：[benchmark_registry.json](/Users/zhanghaoxin/Documents/agent-search/benchmark-research/benchmark_registry.json)
-- 初始地图报告：[benchmark_report.md](/Users/zhanghaoxin/Documents/agent-search/benchmark-research/benchmark_report.md)
+- 初始 registry：[benchmark_registry.json](benchmark-research/benchmark_registry.json)
+- 初始地图报告：[benchmark_report.md](benchmark-research/benchmark_report.md)
 
 ## 1. 先给结论
 

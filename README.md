@@ -1,33 +1,43 @@
-# Agent Search Benchmark Portal
+# Agent Search Benchmark
 
-Internal research workspace for tracking search, retrieval, and agent-search benchmarks.
+Search API / Agent Search benchmark 资料库与前端页面。
 
-This repository currently contains:
+线上页面：
 
-- benchmark catalog research
-- objective benchmark fact seeds
-- public result snapshots
-- competitor visibility tracking for Tavily, Exa, Brave, and related providers
-- frontend scope notes for a read-only internal portal
+- https://agent-search-benchmark.ethan7zhanghx.com
 
-## Current Scope
+## 当前页面
 
-The first frontend should be a read-only internal portal with:
+前端位于 `frontend/`，当前版本包含两个主要视图：
 
-- Benchmark catalog
-- Benchmark detail pages
-- Public leaderboard / score snapshots
-- Competitor visibility views
-- attached source/evidence panels on each relevant page
+- `benchmark 目录`：检索 benchmark，查看 dataset、评估输入输出、指标、来源和 Tavily / Exa / Brave 等服务商出现情况。
+- `leaderboard`：整理公开 score / evaluation 记录，并回链到对应 benchmark。
 
-The frontend should not include runner planning pages, internal API score trends, automation monitoring, or team conclusion pages in v0.
+已删除独立的竞品页面；竞品信息会反向归入 benchmark 和 leaderboard 记录中。
 
-## Key Files
+## 数据
 
-- `benchmark-research/frontend_scope_v1.md`
-- `benchmark-research/objective_benchmark_facts_v1.json`
-- `benchmark-research/public_result_snapshots_v1.json`
-- `benchmark-research/competitor_visibility_v1.json`
-- `benchmark-research/deep_audit_v1.md`
-- `benchmark-research/benchmark_registry.json`
+核心数据位于 `benchmark-research/`：
 
+- `objective_benchmark_facts_v1.json`：benchmark 主表。
+- `dataset_samples_v1.json`：dataset 与样例任务。
+- `public_result_snapshots_v1.json`：公开结果快照。
+- `competitor_visibility_v1.json`：服务商公开 evaluation / benchmark 出现记录。
+- `benchmark_registry.json`：早期调研 registry。
+- `deep_audit_v1.md`：深度调研记录。
+
+## 本地运行
+
+```bash
+cd frontend
+npm install
+npm run dev -- --port 5173
+```
+
+本地地址：`http://127.0.0.1:5173/`
+
+## 部署
+
+当前部署在 Vercel 项目 `agent-search-benchmark`，自定义域名为：
+
+- https://agent-search-benchmark.ethan7zhanghx.com

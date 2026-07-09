@@ -1,0 +1,14 @@
+node_modules/
+.npm-cache/
+dist/
+.next/
+out/
+.vercel/
+.playwright-cli/
+output/
+coverage/
+*.log
+.env
+.env.*
+.npmrc
+.DS_Store
