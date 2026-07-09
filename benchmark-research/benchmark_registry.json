@@ -1,0 +1,1573 @@
+{
+  "meta": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-07-09",
+    "language": "zh-CN",
+    "research_stage": "v1_initial_deep_audit",
+    "deep_audit_report": "benchmark-research/deep_audit_v1.md",
+    "audited_cards": "benchmark-research/audited_benchmarks_v1.json",
+    "objective_data_model": "benchmark-research/objective_data_model_v1.md",
+    "initial_runner_specs": "benchmark-research/initial_runner_specs_v1.md",
+    "objective_facts_seed": "benchmark-research/objective_benchmark_facts_v1.json",
+    "frontend_scope": "benchmark-research/frontend_scope_v1.md",
+    "public_result_snapshots": "benchmark-research/public_result_snapshots_v1.json",
+    "competitor_visibility": "benchmark-research/competitor_visibility_v1.json",
+    "purpose": "Search / agent search benchmark registry for a multilingual search API team. Designed to migrate into a database and power a Chinese frontend.",
+    "selection_rule": "A benchmark is included when search, retrieval, browsing, tool discovery, or evidence discovery materially affects the score or is useful as a design pattern for evaluating search APIs, search+content APIs, or agent search products.",
+    "quality_boundary": "This file is a first-pass map based on public pages, papers, repositories, and dataset pages. It is not yet a per-benchmark deep audit. Each benchmark should later receive a verification state after reading the paper, inspecting data files, checking license, and running a minimal sample if possible.",
+    "recommended_update_cadence": "weekly",
+    "default_report_language": "Chinese",
+    "field_keys_language": "English"
+  },
+  "taxonomy": {
+    "benchmark_families": [
+      "live_web_search",
+      "agentic_browsing",
+      "deep_search_agent",
+      "wide_information_seeking",
+      "state_gated_retrieval",
+      "agent_discovery",
+      "fixed_corpus_retrieval",
+      "multilingual_retrieval",
+      "rag_retrieval_reasoning",
+      "search_augmented_llm_behavior",
+      "vendor_or_analyst_comparison"
+    ],
+    "product_lines": [
+      "search_api",
+      "search_plus_content",
+      "agent_search"
+    ],
+    "search_dependency_modes": [
+      "live_web_tool_required",
+      "fixed_corpus_search_required",
+      "browser_navigation_required",
+      "search_trace_or_preference_dataset",
+      "agent_or_tool_retrieval_required",
+      "indirect_retrieval_component"
+    ],
+    "source_type_tags": [
+      "academic",
+      "official_leaderboard",
+      "github",
+      "dataset_host",
+      "vendor_published",
+      "analyst_published",
+      "blog"
+    ],
+    "automation_status": [
+      "tracked",
+      "candidate",
+      "watchlist"
+    ]
+  },
+  "front_end_notes": {
+    "primary_views": [
+      "benchmark list with filters by family, product line, language, live_web, public data, and automation feasibility",
+      "benchmark detail page with task design, dataset design, search dependency, metrics, links, and update history",
+      "comparison matrix for product relevance and automation readiness",
+      "candidate review queue for newly discovered benchmarks"
+    ],
+    "database_design_warning": "Do not store taxonomy only as markdown text. Keep tags, links, datasets, tasks, metrics, and update events as normalized entities or JSONB columns so the frontend can filter and diff weekly updates."
+  },
+  "benchmarks": [
+    {
+      "id": "facts_search",
+      "name": "FACTS Search",
+      "year": 2025,
+      "maintaining_org": "Google DeepMind / Google Research / Kaggle",
+      "source_type_tags": ["academic", "official_leaderboard", "dataset_host"],
+      "benchmark_family": ["live_web_search"],
+      "product_relevance": ["search_api", "search_plus_content"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "conceptually yes, but official leaderboard fixes one search engine for fairness",
+        "search_output_expected": "web search results appended to model context",
+        "why_it_matters": "It explicitly evaluates whether a model can use Search as a tool to retrieve information and synthesize factual answers."
+      },
+      "task_design": {
+        "input": "information-seeking questions",
+        "process": "model may call a search API during answer generation",
+        "output": "factual answer",
+        "search_pattern": "tool call selection, query formulation, evidence synthesis"
+      },
+      "dataset": {
+        "size": "1842 questions reported by Kaggle snippets",
+        "languages": ["not fully specified in public snippets"],
+        "corpus_type": "live web through a fixed search API in official evaluation",
+        "live_web": true,
+        "public_data": "public examples available; full benchmark has public/private leaderboard splits",
+        "update_pattern": "actively maintained leaderboard suite"
+      },
+      "evaluation": {
+        "primary_metrics": ["automated factuality score"],
+        "judge": "automated judge models in FACTS suite",
+        "leaderboard": true,
+        "reproducibility": "medium; search provider is fixed in official evaluation"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["Kaggle leaderboard", "paper", "public examples dataset"],
+        "can_auto_run": "potentially, if benchmark access and search tool protocol are available",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://www.kaggle.com/benchmarks/google/facts-search",
+        "https://arxiv.org/abs/2512.10791",
+        "https://deepmind.google/blog/facts-benchmark-suite-systematically-evaluating-the-factuality-of-large-language-models/",
+        "https://www.kaggle.com/datasets/deepmind/facts-search-public"
+      ],
+      "notes": "High-priority because search is not merely precomputed evidence; it is a first-class tool in the evaluation."
+    },
+    {
+      "id": "browsecomp",
+      "name": "BrowseComp",
+      "year": 2025,
+      "maintaining_org": "OpenAI",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["live_web_search", "agentic_browsing", "deep_search_agent"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for local evaluations; official comparisons may vary by tool stack",
+        "search_output_expected": "search results plus pages read by the agent",
+        "why_it_matters": "Questions are designed to require persistent web search for hard-to-find short answers."
+      },
+      "task_design": {
+        "input": "short-answer questions reverse-engineered to be hard to locate",
+        "process": "agent searches, reformulates queries, reads pages, reconciles evidence",
+        "output": "short verifiable answer",
+        "search_pattern": "multi-hop lookup, long-tail source discovery, persistence"
+      },
+      "dataset": {
+        "size": "1266 questions",
+        "languages": ["English"],
+        "corpus_type": "open web",
+        "live_web": true,
+        "public_data": "available through OpenAI simple-evals / Kaggle references",
+        "update_pattern": "static dataset; ecosystem leaderboards update separately"
+      },
+      "evaluation": {
+        "primary_metrics": ["accuracy"],
+        "judge": "short answer matching / grading",
+        "leaderboard": "unofficial leaderboards exist",
+        "reproducibility": "medium; live web changes and benchmark contamination are known risks"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["simple-evals repository status", "leaderboards", "contamination notes"],
+        "can_auto_run": "yes, with an agent harness and search provider abstraction",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://openai.com/index/browsecomp/",
+        "https://arxiv.org/abs/2504.12516",
+        "https://github.com/openai/simple-evals",
+        "https://www.kaggle.com/datasets/openai/browsecomp-a-benchmark-for-browsing-agents"
+      ],
+      "notes": "Core benchmark for AI-facing search API positioning, but live web variability makes it less ideal for controlled retriever comparisons."
+    },
+    {
+      "id": "browsecomp_zh",
+      "name": "BrowseComp-ZH",
+      "year": 2025,
+      "maintaining_org": "PALIN / GeneralReasoning community",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["live_web_search", "agentic_browsing"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for local evaluations",
+        "search_output_expected": "Chinese web search results and source pages",
+        "why_it_matters": "Tests agentic search in Chinese-language web ecosystems, not only translated English tasks."
+      },
+      "task_design": {
+        "input": "Chinese multi-hop factual questions",
+        "process": "agent searches Chinese web sources and integrates facts",
+        "output": "short objective answer",
+        "search_pattern": "Chinese query formulation, entity aliasing, multi-source reconciliation"
+      },
+      "dataset": {
+        "size": "289 questions",
+        "languages": ["Chinese"],
+        "corpus_type": "open Chinese web",
+        "live_web": true,
+        "public_data": "released by authors / mirrored in benchmark platforms",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["accuracy", "calibration metrics reported in paper"],
+        "judge": "answer matching / evaluator scripts",
+        "leaderboard": "community leaderboards exist",
+        "reproducibility": "medium"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["paper", "GitHub/dataset", "community leaderboard"],
+        "can_auto_run": "yes, with Chinese web search support",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2504.19314",
+        "https://github.com/PALIN2018/BrowseComp-ZH",
+        "https://openreward.ai/GeneralReasoning/BrowseComp-ZH"
+      ],
+      "notes": "Important for multilingual product narrative because it exposes non-English web infrastructure and language-specific search difficulty."
+    },
+    {
+      "id": "livenewsbench",
+      "name": "LiveNewsBench",
+      "year": 2026,
+      "maintaining_org": "Columbia University / Barnard College",
+      "source_type_tags": ["academic", "github", "official_leaderboard"],
+      "benchmark_family": ["live_web_search"],
+      "product_relevance": ["search_api", "search_plus_content"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes in local evaluations",
+        "search_output_expected": "fresh search results and page visits",
+        "why_it_matters": "It is designed to separate parametric memory from live search by generating questions from recent news."
+      },
+      "task_design": {
+        "input": "freshly curated news-derived questions",
+        "process": "agent performs search, visits pages, and reasons over new information",
+        "output": "answer to a recent, often multi-hop question",
+        "search_pattern": "freshness, time-sensitive source discovery, multi-hop news lookup"
+      },
+      "dataset": {
+        "size": "release-based train/validation/test/human-verified splits",
+        "languages": ["English", "Portuguese mentioned in related search results; verify exact release coverage"],
+        "corpus_type": "recent news web",
+        "live_web": true,
+        "public_data": "code and datasets publicly available",
+        "update_pattern": "regularly updated benchmark"
+      },
+      "evaluation": {
+        "primary_metrics": ["answer accuracy"],
+        "judge": "automated evaluation plus human-verified test subset",
+        "leaderboard": true,
+        "reproducibility": "medium-high because data releases are versioned"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["livenewsbench.com", "GitHub releases", "leaderboard"],
+        "can_auto_run": "yes, strong candidate for scheduled eval",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://livenewsbench.com/",
+        "https://arxiv.org/abs/2602.13543",
+        "https://github.com/LiveNewsBench/LiveNewsBench"
+      ],
+      "notes": "High-priority for search API because freshness is a direct API differentiator."
+    },
+    {
+      "id": "search_arena",
+      "name": "Search Arena",
+      "year": 2025,
+      "maintaining_org": "LMArena / UC Berkeley",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["search_augmented_llm_behavior"],
+      "product_relevance": ["search_api", "search_plus_content"],
+      "search_dependency": {
+        "mode": "search_trace_or_preference_dataset",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "not directly; it is primarily a dataset of interactions and preferences",
+        "search_output_expected": "search-augmented model traces, citations, responses",
+        "why_it_matters": "It shows real user intents, citations, source preferences, and grounding gaps in search-augmented LLMs."
+      },
+      "task_design": {
+        "input": "real user prompts and multi-turn interactions",
+        "process": "search-augmented systems respond and users vote",
+        "output": "paired responses, traces, votes, metadata",
+        "search_pattern": "citation behavior, source credibility, user preference under search augmentation"
+      },
+      "dataset": {
+        "size": "over 24000 paired multi-turn interactions",
+        "languages": ["70+ languages reported in paper"],
+        "corpus_type": "in-the-wild search-augmented conversations",
+        "live_web": "captured traces rather than rerun live web",
+        "public_data": "public dataset and scripts",
+        "update_pattern": "dataset release; platform may evolve"
+      },
+      "evaluation": {
+        "primary_metrics": ["human preference", "citation attribution analysis"],
+        "judge": "human votes plus analysis scripts",
+        "leaderboard": "arena-style",
+        "reproducibility": "high for released dataset analyses"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "dataset host", "arena page"],
+        "can_auto_run": "analysis refresh yes; search API eval no",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://github.com/lmarena/search-arena",
+        "https://arxiv.org/abs/2506.05334",
+        "https://huggingface.co/datasets/lmarena-ai/search-arena-24k"
+      ],
+      "notes": "Do not treat as direct search API eval; treat as product research for what AI users ask and how citations affect trust."
+    },
+    {
+      "id": "browsecomp_plus",
+      "name": "BrowseComp-Plus",
+      "year": 2025,
+      "maintaining_org": "University of Waterloo / Texttron / Tevatron contributors",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["deep_search_agent", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes if exposed as retriever/search tool over the fixed corpus",
+        "search_output_expected": "retrieved web documents or chunks from a fixed corpus",
+        "why_it_matters": "It was built to isolate retriever contribution from LLM agent reasoning in deep research tasks."
+      },
+      "task_design": {
+        "input": "BrowseComp-derived reasoning-intensive questions",
+        "process": "agent searches a fixed curated corpus, reasons over evidence, answers",
+        "output": "short answer with evidence/citation analysis possible",
+        "search_pattern": "retriever quality, reranking, search efficiency, evidence recall"
+      },
+      "dataset": {
+        "size": "830 queries and roughly 100K curated web documents reported by public summaries",
+        "languages": ["English"],
+        "corpus_type": "fixed curated web corpus with supporting docs and hard negatives",
+        "live_web": false,
+        "public_data": "Hugging Face dataset and GitHub available",
+        "update_pattern": "static/versioned"
+      },
+      "evaluation": {
+        "primary_metrics": ["answer accuracy", "evidence recall", "citation accuracy", "search calls"],
+        "judge": "answer scoring plus retrieval analysis",
+        "leaderboard": "paper/repo results",
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "Hugging Face dataset", "paper/ACL page"],
+        "can_auto_run": "yes, very strong candidate for automated internal benchmark",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2508.06600",
+        "https://github.com/texttron/BrowseComp-Plus",
+        "https://huggingface.co/datasets/Tevatron/browsecomp-plus"
+      ],
+      "notes": "Especially relevant to a search+content product because it can evaluate retrieval, content chunks, and agent outcomes under a controlled corpus."
+    },
+    {
+      "id": "xbcp_cross_lingual_browsecomp_plus",
+      "name": "XBCP / Cross-lingual BrowseComp-Plus",
+      "year": 2026,
+      "maintaining_org": "Research authors",
+      "source_type_tags": ["academic"],
+      "benchmark_family": ["deep_search_agent", "multilingual_retrieval", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_api", "search_plus_content"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes if search supports multilingual retrieval over corpus",
+        "search_output_expected": "cross-lingual evidence documents",
+        "why_it_matters": "It varies supporting document languages to test cross-lingual evidence retrieval and integration."
+      },
+      "task_design": {
+        "input": "English questions with evidence in other languages",
+        "process": "retriever finds cross-lingual evidence, agent integrates it",
+        "output": "answer plus possible citation analysis",
+        "search_pattern": "cross-lingual retrieval, evidence recall, multilingual citation fidelity"
+      },
+      "dataset": {
+        "size": "derived from BrowseComp-Plus; exact release details require follow-up",
+        "languages": ["12 languages reported"],
+        "corpus_type": "fixed translated / multilingual evidence corpus",
+        "live_web": false,
+        "public_data": "verify release status",
+        "update_pattern": "new 2026 paper"
+      },
+      "evaluation": {
+        "primary_metrics": ["answer accuracy", "evidence recall", "calibration", "citation fidelity"],
+        "judge": "paper-specific evaluation",
+        "leaderboard": false,
+        "reproducibility": "to verify"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["arXiv", "code/dataset release"],
+        "can_auto_run": "pending data release verification",
+        "recommended_status": "candidate"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2606.15345"
+      ],
+      "notes": "Candidate to track because it directly connects multilingual search quality to agentic deep research outcomes."
+    },
+    {
+      "id": "assistantbench",
+      "name": "AssistantBench",
+      "year": 2024,
+      "maintaining_org": "Academic authors / EMNLP 2024",
+      "source_type_tags": ["academic", "github"],
+      "benchmark_family": ["agentic_browsing", "live_web_search"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "browser_navigation_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "partially; agents may use search plus browsing",
+        "search_output_expected": "web pages, business listings, sources across sites",
+        "why_it_matters": "Tasks require locating real information on the open web and often cannot be solved from model memory."
+      },
+      "task_design": {
+        "input": "realistic time-consuming assistant tasks",
+        "process": "agent browses websites and collects relevant facts",
+        "output": "task-specific answer or structured result",
+        "search_pattern": "local/business discovery, monitoring, multi-site information lookup"
+      },
+      "dataset": {
+        "size": "214 tasks, more than 525 pages from 258 websites",
+        "languages": ["English"],
+        "corpus_type": "open web",
+        "live_web": true,
+        "public_data": "GitHub available",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["accuracy / task success"],
+        "judge": "automatic evaluation where possible",
+        "leaderboard": "paper/repo results",
+        "reproducibility": "medium due to live web drift"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "site"],
+        "can_auto_run": "yes but brittle against web drift",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://assistantbench.github.io/",
+        "https://github.com/oriyor/assistantbench",
+        "https://arxiv.org/abs/2407.15711"
+      ],
+      "notes": "Useful to understand end-user assistant tasks that create demand for search+content beyond plain SERP."
+    },
+    {
+      "id": "gaia",
+      "name": "GAIA",
+      "year": 2023,
+      "maintaining_org": "Meta AI / Hugging Face collaborators",
+      "source_type_tags": ["academic", "official_leaderboard", "dataset_host"],
+      "benchmark_family": ["agentic_browsing"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "browser_navigation_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "partially; GAIA also needs files, multimodal reasoning, tools",
+        "search_output_expected": "web facts plus tool outputs",
+        "why_it_matters": "Many tasks require web browsing and tool use, but search is not isolated from other capabilities."
+      },
+      "task_design": {
+        "input": "real-world assistant questions with unambiguous answers",
+        "process": "agent uses browsing, tools, multimodal inputs, and reasoning",
+        "output": "short final answer",
+        "search_pattern": "multi-step factual lookup mixed with tool use"
+      },
+      "dataset": {
+        "size": "466 questions in paper; public validation and hidden leaderboard splits",
+        "languages": ["English"],
+        "corpus_type": "open web plus files/tools",
+        "live_web": true,
+        "public_data": "partial; hidden answers for leaderboard",
+        "update_pattern": "leaderboard maintained by ecosystem"
+      },
+      "evaluation": {
+        "primary_metrics": ["accuracy"],
+        "judge": "exact/normalized answer grading",
+        "leaderboard": true,
+        "reproducibility": "medium"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["Hugging Face GAIA org", "leaderboards"],
+        "can_auto_run": "yes for public split, but not search-specific",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2311.12983",
+        "https://huggingface.co/gaia-benchmark",
+        "https://huggingface.co/learn/agents-course/en/unit4/what-is-gaia"
+      ],
+      "notes": "Good benchmark to track because agent products quote it, but it should be tagged as mixed-capability rather than pure search."
+    },
+    {
+      "id": "webarena",
+      "name": "WebArena",
+      "year": 2023,
+      "maintaining_org": "Carnegie Mellon University and collaborators",
+      "source_type_tags": ["academic", "github", "official_leaderboard"],
+      "benchmark_family": ["agentic_browsing"],
+      "product_relevance": ["agent_search"],
+      "search_dependency": {
+        "mode": "browser_navigation_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "limited; it is more about web interaction than standalone search API",
+        "search_output_expected": "self-hosted website pages and environment state",
+        "why_it_matters": "It evaluates agents converting natural language instructions into web interactions; search/navigation is part of the environment."
+      },
+      "task_design": {
+        "input": "high-level web task instruction",
+        "process": "agent navigates self-hosted realistic websites",
+        "output": "functional task completion",
+        "search_pattern": "in-site search, navigation, tool/knowledge base use"
+      },
+      "dataset": {
+        "size": "benchmark tasks over e-commerce, forum, software development, CMS domains",
+        "languages": ["English"],
+        "corpus_type": "self-hostable web environment",
+        "live_web": false,
+        "public_data": "code and environment available",
+        "update_pattern": "family has extensions such as VisualWebArena and WebArena-Infinity"
+      },
+      "evaluation": {
+        "primary_metrics": ["task success"],
+        "judge": "environment-defined success checks",
+        "leaderboard": true,
+        "reproducibility": "high compared with open web"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["webarena.dev", "GitHub", "family extensions"],
+        "can_auto_run": "yes but infrastructure-heavy",
+        "recommended_status": "watchlist"
+      },
+      "sources": [
+        "https://webarena.dev/",
+        "https://arxiv.org/abs/2307.13854",
+        "https://github.com/web-arena-x/webarena"
+      ],
+      "notes": "More relevant to agent browser/navigation products than pure search APIs."
+    },
+    {
+      "id": "webwalkerqa",
+      "name": "WebWalkerQA",
+      "year": 2025,
+      "maintaining_org": "Academic authors",
+      "source_type_tags": ["academic", "dataset_host"],
+      "benchmark_family": ["agentic_browsing", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "browser_navigation_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "partially; focuses on traversal inside websites after source discovery",
+        "search_output_expected": "website subpages and extracted content",
+        "why_it_matters": "It tests whether agents can traverse subpages systematically, addressing shallow search result limitations."
+      },
+      "task_design": {
+        "input": "question tied to a website/webpage collection",
+        "process": "agent traverses links and accumulates evidence",
+        "output": "answer to multi-step information-seeking query",
+        "search_pattern": "vertical exploration, link traversal, content extraction"
+      },
+      "dataset": {
+        "size": "680 queries across four scenarios and over 1373 webpages",
+        "languages": ["English plus possible multilingual distribution; verify release"],
+        "corpus_type": "webpages / website traversal benchmark",
+        "live_web": "mostly controlled webpages/dataset",
+        "public_data": "leaderboard/dataset references available",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["answer accuracy"],
+        "judge": "benchmark scripts / leaderboard",
+        "leaderboard": true,
+        "reproducibility": "medium-high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["Hugging Face leaderboard", "paper", "dataset"],
+        "can_auto_run": "yes if data access is stable",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2501.07572",
+        "https://aclanthology.org/2025.acl-long.508.pdf",
+        "https://huggingface.co/spaces/callanwu/WebWalkerQALeaderboard"
+      ],
+      "notes": "Useful for search+content APIs that plan to return not only a page but crawled/structured subpage content."
+    },
+    {
+      "id": "widesearch",
+      "name": "WideSearch",
+      "year": 2025,
+      "maintaining_org": "ByteDance Seed and collaborators",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["wide_information_seeking", "live_web_search"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes in local evals",
+        "search_output_expected": "many atomic facts from diverse web sources",
+        "why_it_matters": "It targets broad, exhaustive information collection where recall and completeness dominate."
+      },
+      "task_design": {
+        "input": "large-scale collection question with expected table/structured output",
+        "process": "agent gathers many atomic facts and fills an organized output",
+        "output": "structured table / collection",
+        "search_pattern": "broad coverage, deduplication, completeness, verification"
+      },
+      "dataset": {
+        "size": "200 tasks, 100 English and 100 Chinese, over 15 domains",
+        "languages": ["English", "Chinese"],
+        "corpus_type": "open web with ground-truth tables",
+        "live_web": true,
+        "public_data": "dataset and code released",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["overall success", "atomic item correctness/completeness"],
+        "judge": "objective verification against gold tables",
+        "leaderboard": "paper/repo results",
+        "reproducibility": "medium due to open web dependency"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["homepage", "GitHub", "OpenReview/arXiv"],
+        "can_auto_run": "yes, but likely expensive",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://widesearch-seed.github.io/",
+        "https://arxiv.org/abs/2508.07999",
+        "https://github.com/ByteDance-Seed/WideSearch"
+      ],
+      "notes": "Excellent product-design signal for agent search where users need exhaustive collection rather than one best answer."
+    },
+    {
+      "id": "sgr_bench",
+      "name": "SGR-Bench",
+      "year": 2026,
+      "maintaining_org": "PKU AI Web / academic authors",
+      "source_type_tags": ["academic", "dataset_host"],
+      "benchmark_family": ["state_gated_retrieval", "agentic_browsing"],
+      "product_relevance": ["search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "browser_navigation_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "partially; requires source discovery plus site-specific state configuration",
+        "search_output_expected": "structured answers from specialized public data ecosystems",
+        "why_it_matters": "It isolates a common failure mode: finding a relevant source but using the wrong filter/view/scope."
+      },
+      "task_design": {
+        "input": "expert-curated structured retrieval tasks",
+        "process": "agent discovers correct site and configures filters/hierarchies/views",
+        "output": "structured answer",
+        "search_pattern": "state-gated retrieval, query constraints, filter accuracy"
+      },
+      "dataset": {
+        "size": "100 expert-curated tasks across six source families and 12 public data ecosystems",
+        "languages": ["English"],
+        "corpus_type": "public data websites/ecosystems",
+        "live_web": true,
+        "public_data": "Hugging Face dataset and single-case instructions",
+        "update_pattern": "new 2026 release"
+      },
+      "evaluation": {
+        "primary_metrics": ["item-level F1", "row-level F1"],
+        "judge": "reference answers and scoring instructions",
+        "leaderboard": "paper results",
+        "reproducibility": "medium; full evaluation infra may be separated"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["arXiv", "Hugging Face dataset", "GitHub if released"],
+        "can_auto_run": "pending infra access; strong candidate for future agent search eval",
+        "recommended_status": "candidate"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2605.22219",
+        "https://huggingface.co/datasets/PKUAIWeb/SGR-BENCH"
+      ],
+      "notes": "Very relevant to agent search products that need to search within structured, filter-heavy websites rather than only retrieve documents."
+    },
+    {
+      "id": "deepsearchqa",
+      "name": "DeepSearchQA",
+      "year": 2026,
+      "maintaining_org": "Google DeepMind / Google Research / Kaggle",
+      "source_type_tags": ["academic", "official_leaderboard", "dataset_host"],
+      "benchmark_family": ["deep_search_agent", "wide_information_seeking"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "likely yes in local harnesses; official setup should be verified",
+        "search_output_expected": "multi-step search results and evidence for exhaustive answer lists",
+        "why_it_matters": "It explicitly evaluates agents on difficult multi-step information-seeking tasks requiring comprehensive answer sets."
+      },
+      "task_design": {
+        "input": "hand-crafted complex search tasks",
+        "process": "agent plans searches, identifies gaps, searches again, compiles exhaustive results",
+        "output": "answer list / comprehensive response",
+        "search_pattern": "causal-chain search, comprehensiveness, recall over multiple fields"
+      },
+      "dataset": {
+        "size": "900 prompts across 17 fields",
+        "languages": ["not fully specified"],
+        "corpus_type": "web information seeking",
+        "live_web": true,
+        "public_data": "Kaggle benchmark and Hugging Face dataset references",
+        "update_pattern": "leaderboard/dataset"
+      },
+      "evaluation": {
+        "primary_metrics": ["accuracy/comprehensiveness scoring"],
+        "judge": "benchmark-specific scoring",
+        "leaderboard": true,
+        "reproducibility": "to verify"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["Kaggle benchmark", "Hugging Face dataset", "paper"],
+        "can_auto_run": "pending access verification",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://www.kaggle.com/benchmarks/google/dsqa",
+        "https://huggingface.co/datasets/google/deepsearchqa",
+        "https://arxiv.org/html/2601.20975v1"
+      ],
+      "notes": "High-priority for future agent search because it stresses comprehensive search planning rather than one-shot lookup."
+    },
+    {
+      "id": "deepresearch_bench_ustc",
+      "name": "DeepResearch Bench",
+      "year": 2025,
+      "maintaining_org": "USTC / Agent Research Lab contributors",
+      "source_type_tags": ["academic", "github", "official_leaderboard"],
+      "benchmark_family": ["deep_search_agent"],
+      "product_relevance": ["search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "partially; full deep research systems include many components",
+        "search_output_expected": "cited sources and generated research report",
+        "why_it_matters": "It evaluates information collection and citation trustworthiness as part of deep research reports."
+      },
+      "task_design": {
+        "input": "PhD-level research tasks",
+        "process": "agent searches, collects sources, synthesizes long report",
+        "output": "citation-rich research report",
+        "search_pattern": "multi-step exploration, source collection, citation support"
+      },
+      "dataset": {
+        "size": "100 tasks, 50 English and 50 Chinese, across 22 domains",
+        "languages": ["English", "Chinese"],
+        "corpus_type": "open web / deep research sources",
+        "live_web": true,
+        "public_data": "query data, raw model outputs, evaluation framework",
+        "update_pattern": "actively maintained with DRB II follow-up"
+      },
+      "evaluation": {
+        "primary_metrics": ["RACE report quality", "FACT citation accuracy/effective citations"],
+        "judge": "LLM-assisted evaluation with reference/adaptive criteria",
+        "leaderboard": true,
+        "reproducibility": "medium; judge models and scraping dependencies matter"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "Hugging Face leaderboard", "homepage"],
+        "can_auto_run": "yes but costly; useful after harness maturity",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://deepresearch-bench.github.io/",
+        "https://arxiv.org/abs/2506.11763",
+        "https://github.com/Ayanami0730/deep_research_bench"
+      ],
+      "notes": "Better for product-level deep research agents than for isolating search API quality."
+    },
+    {
+      "id": "deep_research_bench_futuresearch",
+      "name": "Deep Research Bench (FutureSearch / RetroSearch)",
+      "year": 2025,
+      "maintaining_org": "FutureSearch",
+      "source_type_tags": ["academic", "official_leaderboard", "blog"],
+      "benchmark_family": ["deep_search_agent", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes if API can search the frozen RetroSearch corpus",
+        "search_output_expected": "retrieved frozen webpages and long agent traces",
+        "why_it_matters": "It controls web drift with a frozen scraped web environment, making repeated evaluations more reliable."
+      },
+      "task_design": {
+        "input": "multi-step web research task instances",
+        "process": "agent searches frozen pages or live web equivalent, reasons, answers",
+        "output": "worked-out answer",
+        "search_pattern": "offline search over 10K-100K pages per task, hallucination/tool-use trace analysis"
+      },
+      "dataset": {
+        "size": "89 tasks in paper; public eval pages mention evolving task counts",
+        "languages": ["English"],
+        "corpus_type": "frozen scraped web pages (RetroSearch)",
+        "live_web": false,
+        "public_data": "leaderboard/eval environment references",
+        "update_pattern": "actively updated benchmark site"
+      },
+      "evaluation": {
+        "primary_metrics": ["score against human-worked answers", "trace failure analysis"],
+        "judge": "automated and curated answer evaluation",
+        "leaderboard": true,
+        "reproducibility": "high relative to live web benchmarks"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["FutureSearch evals", "leaderboard", "paper"],
+        "can_auto_run": "pending environment access; strong architecture reference",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2506.06287",
+        "https://futuresearch.ai/deep-research-bench/",
+        "https://evals.futuresearch.ai/"
+      ],
+      "notes": "Important design pattern for building a stable internal benchmark: freeze web snapshots while preserving search-like interaction."
+    },
+    {
+      "id": "agentsearchbench",
+      "name": "AgentSearchBench",
+      "year": 2026,
+      "maintaining_org": "University College London / research authors",
+      "source_type_tags": ["academic", "github"],
+      "benchmark_family": ["agent_discovery"],
+      "product_relevance": ["agent_search"],
+      "search_dependency": {
+        "mode": "agent_or_tool_retrieval_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes, for agent retrieval and reranking experiments",
+        "search_output_expected": "ranked candidate agents for a task",
+        "why_it_matters": "It formalizes agent search as retrieval/reranking with execution-grounded relevance, directly matching future agent search products."
+      },
+      "task_design": {
+        "input": "executable task queries and high-level task descriptions",
+        "process": "system retrieves/reranks candidate agents",
+        "output": "ranked list of suitable agents",
+        "search_pattern": "semantic retrieval, reranking, behavioral/execution-aware signals"
+      },
+      "dataset": {
+        "size": "nearly 10000 real-world agents across providers",
+        "languages": ["mostly English documentation; verify"],
+        "corpus_type": "agent descriptions, generated tasks, execution-derived labels",
+        "live_web": false,
+        "public_data": "code/repository available",
+        "update_pattern": "new 2026 benchmark"
+      },
+      "evaluation": {
+        "primary_metrics": ["retrieval metrics", "reranking metrics", "execution-grounded relevance"],
+        "judge": "LLM judge plus quality controls and human alignment validation",
+        "leaderboard": "paper results",
+        "reproducibility": "medium-high if code/data complete"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "project page", "arXiv"],
+        "can_auto_run": "yes, strongest direct candidate for agent search",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://bingo-w.github.io/AgentSearchBench/",
+        "https://arxiv.org/abs/2604.22436",
+        "https://github.com/Bingo-W/AgentSearchBench"
+      ],
+      "notes": "Top-priority for the planned agent search product line."
+    },
+    {
+      "id": "agentselect",
+      "name": "AgentSelect",
+      "year": 2026,
+      "maintaining_org": "Research authors",
+      "source_type_tags": ["academic"],
+      "benchmark_family": ["agent_discovery"],
+      "product_relevance": ["agent_search"],
+      "search_dependency": {
+        "mode": "agent_or_tool_retrieval_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for recommendation/retrieval modeling",
+        "search_output_expected": "recommended agent configurations for narrative queries",
+        "why_it_matters": "It reframes agent selection as query-to-agent recommendation over a very large candidate pool."
+      },
+      "task_design": {
+        "input": "narrative natural-language query",
+        "process": "system matches query to deployable agent/profile/configuration",
+        "output": "agent recommendation",
+        "search_pattern": "long-tail recommendation, capability matching, transfer to marketplaces"
+      },
+      "dataset": {
+        "size": "111179 queries, 107721 deployable agents, 251103 interaction records aggregated from 40+ sources",
+        "languages": ["not fully specified"],
+        "corpus_type": "agent profiles and heterogeneous evaluation-derived interaction signals",
+        "live_web": false,
+        "public_data": "verify release status",
+        "update_pattern": "new 2026 paper"
+      },
+      "evaluation": {
+        "primary_metrics": ["recommendation/retrieval metrics"],
+        "judge": "positive-only interaction data and benchmark-specific evaluation",
+        "leaderboard": false,
+        "reproducibility": "to verify"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["arXiv", "code/dataset release"],
+        "can_auto_run": "pending data release",
+        "recommended_status": "candidate"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2603.03761"
+      ],
+      "notes": "Complementary to AgentSearchBench. More recommendation-flavored and broader in candidate scale."
+    },
+    {
+      "id": "autoresearchbench",
+      "name": "AutoResearchBench",
+      "year": 2026,
+      "maintaining_org": "Research authors",
+      "source_type_tags": ["academic", "github"],
+      "benchmark_family": ["deep_search_agent", "wide_information_seeking"],
+      "product_relevance": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes if search indexes the scientific paper corpus",
+        "search_output_expected": "candidate scientific papers",
+        "why_it_matters": "It evaluates autonomous literature discovery, a domain where search quality directly controls success."
+      },
+      "task_design": {
+        "input": "scientific literature discovery query/specification",
+        "process": "agent searches, browses, reasons over papers",
+        "output": "target paper or complete set of qualifying papers",
+        "search_pattern": "deep target discovery and wide set collection in academic corpora"
+      },
+      "dataset": {
+        "size": "1000 curated questions, 195 CS topics, over 50000 papers reported by project page",
+        "languages": ["English"],
+        "corpus_type": "scientific literature corpus",
+        "live_web": false,
+        "public_data": "GitHub/project page available",
+        "update_pattern": "new 2026 release"
+      },
+      "evaluation": {
+        "primary_metrics": ["accuracy for deep research", "IoU for wide research"],
+        "judge": "verified against real academic literature",
+        "leaderboard": "paper results",
+        "reproducibility": "medium-high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "project page", "arXiv"],
+        "can_auto_run": "yes if corpus/index setup is available",
+        "recommended_status": "candidate"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2604.25256",
+        "https://github.com/CherYou/AutoResearchBench",
+        "https://cheryou.github.io/autoresearchbench.github.io/"
+      ],
+      "notes": "A vertical search-agent benchmark. Useful as a pattern for domain-specific agent search APIs."
+    },
+    {
+      "id": "beir",
+      "name": "BEIR",
+      "year": 2021,
+      "maintaining_org": "BEIR Cellar / research community",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["fixed_corpus_retrieval"],
+      "product_relevance": ["search_api"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for corpus retrieval experiments",
+        "search_output_expected": "ranked documents/passages",
+        "why_it_matters": "It is a standard heterogeneous IR benchmark for retrieval models across domains."
+      },
+      "task_design": {
+        "input": "query",
+        "process": "retrieve ranked documents from fixed corpora",
+        "output": "ranked list",
+        "search_pattern": "zero-shot domain generalization"
+      },
+      "dataset": {
+        "size": "18 diverse datasets in original paper; 15+ in repo summaries",
+        "languages": ["primarily English"],
+        "corpus_type": "fixed public IR corpora",
+        "live_web": false,
+        "public_data": "available through package/Hugging Face",
+        "update_pattern": "mature benchmark"
+      },
+      "evaluation": {
+        "primary_metrics": ["nDCG@10", "Recall@k", "MAP", "MRR"],
+        "judge": "human relevance labels from component datasets",
+        "leaderboard": "community/model leaderboards",
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "HF datasets/results"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://github.com/beir-cellar/beir",
+        "https://openreview.net/forum?id=wCu6T5xFjeJ",
+        "https://huggingface.co/datasets/BeIR/beir"
+      ],
+      "notes": "Good for retriever baselines, but not enough to evaluate web freshness, crawling, snippet quality, or agent search behavior."
+    },
+    {
+      "id": "mteb_retrieval",
+      "name": "MTEB Retrieval",
+      "year": 2022,
+      "maintaining_org": "MTEB community / Hugging Face",
+      "source_type_tags": ["github", "official_leaderboard", "dataset_host"],
+      "benchmark_family": ["fixed_corpus_retrieval", "multilingual_retrieval"],
+      "product_relevance": ["search_api"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for embedding/reranking components",
+        "search_output_expected": "ranked documents or passages",
+        "why_it_matters": "It is the dominant public leaderboard for embedding models, including retrieval and multilingual retrieval tasks."
+      },
+      "task_design": {
+        "input": "query or text input depending on task",
+        "process": "retrieve, rerank, classify, cluster, etc.; focus here is retrieval subset",
+        "output": "ranked results / task scores",
+        "search_pattern": "embedding model comparison and multilingual coverage"
+      },
+      "dataset": {
+        "size": "many tasks across languages; exact selection depends on leaderboard version",
+        "languages": ["multilingual"],
+        "corpus_type": "fixed benchmark datasets",
+        "live_web": false,
+        "public_data": "framework and leaderboard public",
+        "update_pattern": "actively maintained"
+      },
+      "evaluation": {
+        "primary_metrics": ["nDCG@10", "Recall@k", "task-specific retrieval scores"],
+        "judge": "dataset relevance labels",
+        "leaderboard": true,
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["HF leaderboard", "mteb GitHub", "results repo"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://huggingface.co/spaces/mteb/leaderboard",
+        "https://github.com/embeddings-benchmark/mteb",
+        "https://huggingface.co/mteb"
+      ],
+      "notes": "Useful for model/component selection; should not be confused with an end-to-end web search API benchmark."
+    },
+    {
+      "id": "ms_marco",
+      "name": "MS MARCO",
+      "year": 2016,
+      "maintaining_org": "Microsoft",
+      "source_type_tags": ["academic", "official_leaderboard", "dataset_host"],
+      "benchmark_family": ["fixed_corpus_retrieval"],
+      "product_relevance": ["search_api"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for passage/document ranking over dataset",
+        "search_output_expected": "ranked passages/documents",
+        "why_it_matters": "It is a foundational search ranking dataset derived from real Bing queries and web passages/documents."
+      },
+      "task_design": {
+        "input": "real search query",
+        "process": "rank passages/documents from fixed corpus",
+        "output": "ranked list",
+        "search_pattern": "large-scale supervised web ranking"
+      },
+      "dataset": {
+        "size": "8.8M passages; hundreds of thousands of training queries depending on task/version",
+        "languages": ["primarily English; web search variants include broader language metadata"],
+        "corpus_type": "fixed passages/documents from web",
+        "live_web": false,
+        "public_data": "datasets and leaderboards public",
+        "update_pattern": "mature/partly retired leaderboards, v2 variants exist"
+      },
+      "evaluation": {
+        "primary_metrics": ["MRR", "nDCG", "Recall"],
+        "judge": "human/derived relevance labels",
+        "leaderboard": true,
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["MS MARCO site", "GitHub/dataset pages"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://microsoft.github.io/msmarco/",
+        "https://microsoft.github.io/msmarco/Datasets.html",
+        "https://www.microsoft.com/en-us/research/publication/ms-marco-web-search-a-large-scale-information-rich-web-dataset-with-millions-of-real-click-labels/"
+      ],
+      "notes": "Baseline search relevance benchmark; useful for ranking but not agentic behavior."
+    },
+    {
+      "id": "trec_deep_learning_track",
+      "name": "TREC Deep Learning Track",
+      "year": 2019,
+      "maintaining_org": "TREC / NIST / Microsoft and organizers",
+      "source_type_tags": ["academic", "official_leaderboard"],
+      "benchmark_family": ["fixed_corpus_retrieval"],
+      "product_relevance": ["search_api"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for ranking systems",
+        "search_output_expected": "ranked passages/documents",
+        "why_it_matters": "It provides deeper judged test collections around MS MARCO-style retrieval."
+      },
+      "task_design": {
+        "input": "web search query",
+        "process": "full retrieval or reranking",
+        "output": "ranked list",
+        "search_pattern": "ad hoc retrieval in large-data regime"
+      },
+      "dataset": {
+        "size": "year-specific judged query sets over MS MARCO collections",
+        "languages": ["primarily English"],
+        "corpus_type": "fixed retrieval corpus",
+        "live_web": false,
+        "public_data": "track data and guidelines public",
+        "update_pattern": "annual track history"
+      },
+      "evaluation": {
+        "primary_metrics": ["nDCG@10", "MAP", "Recall", "MRR"],
+        "judge": "NIST/TREC relevance judgments",
+        "leaderboard": "TREC track results",
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["TREC/NIST pages", "MS MARCO guidelines"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://microsoft.github.io/msmarco/TREC-Deep-Learning.html",
+        "https://trec.nist.gov/",
+        "https://www.microsoft.com/en-us/research/publication/overview-of-the-trec-2023-deep-learning-track/"
+      ],
+      "notes": "Important for rigorous IR methodology and metrics."
+    },
+    {
+      "id": "miracl",
+      "name": "MIRACL",
+      "year": 2022,
+      "maintaining_org": "MIRACL project / WSDM Cup community",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["multilingual_retrieval", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_api"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for multilingual retrieval components",
+        "search_output_expected": "ranked Wikipedia passages",
+        "why_it_matters": "It provides high-quality human relevance judgments across 18 languages."
+      },
+      "task_design": {
+        "input": "native-language query/topic",
+        "process": "retrieve relevant passages in same language",
+        "output": "ranked passages",
+        "search_pattern": "monolingual multilingual retrieval quality"
+      },
+      "dataset": {
+        "size": "over 726K relevance judgments for 78K queries across 18 languages reported by paper/source pages",
+        "languages": ["18 languages"],
+        "corpus_type": "Wikipedia passages",
+        "live_web": false,
+        "public_data": "dataset/repo/HF available",
+        "update_pattern": "mature"
+      },
+      "evaluation": {
+        "primary_metrics": ["nDCG@10", "Recall@k"],
+        "judge": "native-speaker human annotations",
+        "leaderboard": true,
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["project site", "GitHub", "HF dataset"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://project-miracl.github.io/",
+        "https://github.com/project-miracl/miracl",
+        "https://huggingface.co/datasets/miracl/miracl",
+        "https://arxiv.org/abs/2210.09984"
+      ],
+      "notes": "Core multilingual retrieval benchmark; limited to Wikipedia-style corpus."
+    },
+    {
+      "id": "neuclir",
+      "name": "TREC NeuCLIR / NeuCLIRBench",
+      "year": 2022,
+      "maintaining_org": "TREC NeuCLIR organizers",
+      "source_type_tags": ["academic", "official_leaderboard", "dataset_host"],
+      "benchmark_family": ["multilingual_retrieval", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_api", "search_plus_content"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for cross-language retrieval systems",
+        "search_output_expected": "ranked multilingual / cross-language news or technical documents",
+        "why_it_matters": "It studies cross-language and multilingual retrieval, including report generation variants."
+      },
+      "task_design": {
+        "input": "topics in one language querying documents in another/multiple languages",
+        "process": "cross-language retrieval and sometimes generation",
+        "output": "ranked documents or generated report",
+        "search_pattern": "CLIR, MLIR, multilingual news and technical search"
+      },
+      "dataset": {
+        "size": "year-specific TREC collections; NeuCLIRBench aggregates track queries",
+        "languages": ["Chinese", "Persian", "Russian", "English topics", "others depending on task"],
+        "corpus_type": "news and technical documents",
+        "live_web": false,
+        "public_data": "track data and HF benchmark references",
+        "update_pattern": "TREC annual track / benchmark aggregation"
+      },
+      "evaluation": {
+        "primary_metrics": ["nDCG", "Recall", "task-specific generation metrics"],
+        "judge": "TREC assessments",
+        "leaderboard": "TREC track results",
+        "reproducibility": "high after data access setup"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["neuclir site", "TREC browser", "HF dataset"],
+        "can_auto_run": "yes after corpus setup",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://neuclir.github.io/",
+        "https://pages.nist.gov/trec-browser/trec33/neuclir/overview/",
+        "https://huggingface.co/datasets/neuclir/bench",
+        "https://arxiv.org/abs/2509.14355"
+      ],
+      "notes": "Good for global/multilingual search API research, especially cross-language behavior."
+    },
+    {
+      "id": "mr_tydi",
+      "name": "Mr. TyDi",
+      "year": 2021,
+      "maintaining_org": "University of Waterloo / Castorini",
+      "source_type_tags": ["academic", "github"],
+      "benchmark_family": ["multilingual_retrieval", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_api"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for retrieval components",
+        "search_output_expected": "ranked passages/documents",
+        "why_it_matters": "It evaluates monolingual dense retrieval across 11 typologically diverse languages."
+      },
+      "task_design": {
+        "input": "query in target language",
+        "process": "retrieve relevant passages in same language",
+        "output": "ranked results",
+        "search_pattern": "non-English dense retrieval generalization"
+      },
+      "dataset": {
+        "size": "11 languages; dataset derived from TyDi",
+        "languages": ["11 typologically diverse languages"],
+        "corpus_type": "fixed retrieval corpus",
+        "live_web": false,
+        "public_data": "GitHub/data available",
+        "update_pattern": "mature"
+      },
+      "evaluation": {
+        "primary_metrics": ["MRR", "Recall", "nDCG"],
+        "judge": "relevance labels",
+        "leaderboard": "community results",
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "ir_datasets", "MTEB derivatives"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://github.com/castorini/mr.tydi",
+        "https://arxiv.org/abs/2108.08787",
+        "https://ir-datasets.com/mr-tydi.html"
+      ],
+      "notes": "Good component benchmark for multilingual retrieval; less directly tied to web search UX."
+    },
+    {
+      "id": "frames",
+      "name": "FRAMES",
+      "year": 2024,
+      "maintaining_org": "Google / Harvard collaborators",
+      "source_type_tags": ["academic", "dataset_host"],
+      "benchmark_family": ["rag_retrieval_reasoning"],
+      "product_relevance": ["search_plus_content"],
+      "search_dependency": {
+        "mode": "indirect_retrieval_component",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes if the system retrieves from the required corpus; not a live web API benchmark",
+        "search_output_expected": "retrieved documents/evidence for RAG",
+        "why_it_matters": "It evaluates factuality, retrieval, and reasoning jointly for multi-hop RAG questions."
+      },
+      "task_design": {
+        "input": "multi-hop question",
+        "process": "retrieve needed sources and reason over them",
+        "output": "answer",
+        "search_pattern": "retrieval completeness, temporal disambiguation, multi-document synthesis"
+      },
+      "dataset": {
+        "size": "824 questions",
+        "languages": ["English"],
+        "corpus_type": "RAG evidence sources, often Wikipedia-style",
+        "live_web": false,
+        "public_data": "Hugging Face dataset",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["answer accuracy", "retrieval and reasoning analysis"],
+        "judge": "benchmark-specific scoring",
+        "leaderboard": "not primary",
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["HF dataset", "paper"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://arxiv.org/abs/2409.12941",
+        "https://huggingface.co/datasets/google/frames-benchmark"
+      ],
+      "notes": "Include as a RAG design pattern, not as proof of live search API quality."
+    },
+    {
+      "id": "multihop_rag",
+      "name": "MultiHop-RAG",
+      "year": 2024,
+      "maintaining_org": "Research authors",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["rag_retrieval_reasoning", "fixed_corpus_retrieval"],
+      "product_relevance": ["search_plus_content"],
+      "search_dependency": {
+        "mode": "fixed_corpus_search_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes over fixed knowledge base",
+        "search_output_expected": "supporting evidence documents",
+        "why_it_matters": "It isolates multi-hop retrieval and reasoning failures in RAG pipelines."
+      },
+      "task_design": {
+        "input": "multi-hop query involving document metadata",
+        "process": "retrieve evidence across 2-4 documents and answer",
+        "output": "answer plus supporting evidence",
+        "search_pattern": "multi-document evidence retrieval, metadata filtering"
+      },
+      "dataset": {
+        "size": "2556 queries",
+        "languages": ["English"],
+        "corpus_type": "fixed news/document corpus",
+        "live_web": false,
+        "public_data": "GitHub/HF available",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["retrieval quality", "answer quality"],
+        "judge": "ground-truth answers and evidence",
+        "leaderboard": false,
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["GitHub", "HF dataset", "paper"],
+        "can_auto_run": "yes",
+        "recommended_status": "tracked"
+      },
+      "sources": [
+        "https://github.com/yixuantt/MultiHop-RAG/",
+        "https://arxiv.org/abs/2401.15391"
+      ],
+      "notes": "Useful for testing processed content and evidence retrieval."
+    },
+    {
+      "id": "hotpotqa",
+      "name": "HotpotQA",
+      "year": 2018,
+      "maintaining_org": "CMU / Stanford / Universite de Montreal / Google AI authors",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["rag_retrieval_reasoning"],
+      "product_relevance": ["search_plus_content"],
+      "search_dependency": {
+        "mode": "indirect_retrieval_component",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes for open-domain variants; many setups provide context",
+        "search_output_expected": "supporting Wikipedia facts",
+        "why_it_matters": "It is a classic multi-hop QA dataset with supporting facts, useful for evidence retrieval patterns."
+      },
+      "task_design": {
+        "input": "multi-hop question",
+        "process": "find and reason over multiple supporting documents/facts",
+        "output": "answer and supporting facts",
+        "search_pattern": "multi-hop evidence lookup"
+      },
+      "dataset": {
+        "size": "113K Wikipedia-based QA pairs",
+        "languages": ["English"],
+        "corpus_type": "Wikipedia",
+        "live_web": false,
+        "public_data": "available",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["Exact Match", "F1", "supporting fact metrics"],
+        "judge": "gold answers and supporting facts",
+        "leaderboard": true,
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["homepage", "GitHub"],
+        "can_auto_run": "yes",
+        "recommended_status": "watchlist"
+      },
+      "sources": [
+        "https://hotpotqa.github.io/",
+        "https://arxiv.org/abs/1809.09600",
+        "https://github.com/hotpotqa/hotpot"
+      ],
+      "notes": "Legacy pattern benchmark; less directly relevant to modern web search APIs."
+    },
+    {
+      "id": "natural_questions",
+      "name": "Natural Questions",
+      "year": 2019,
+      "maintaining_org": "Google Research",
+      "source_type_tags": ["academic", "github", "dataset_host"],
+      "benchmark_family": ["rag_retrieval_reasoning"],
+      "product_relevance": ["search_plus_content"],
+      "search_dependency": {
+        "mode": "indirect_retrieval_component",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "partially; original annotation used Google top results but benchmark is mostly fixed QA",
+        "search_output_expected": "Wikipedia page / passage",
+        "why_it_matters": "Questions are real Google queries, and annotation was based on top search-result Wikipedia pages."
+      },
+      "task_design": {
+        "input": "real anonymized Google query",
+        "process": "read retrieved Wikipedia page and identify answer span",
+        "output": "long answer and short answer or null",
+        "search_pattern": "question answering from search-result pages"
+      },
+      "dataset": {
+        "size": "over 300K training examples, plus dev/test sets",
+        "languages": ["English"],
+        "corpus_type": "Wikipedia pages selected from search results",
+        "live_web": false,
+        "public_data": "available",
+        "update_pattern": "static"
+      },
+      "evaluation": {
+        "primary_metrics": ["long answer F1", "short answer F1"],
+        "judge": "human annotations",
+        "leaderboard": "historical",
+        "reproducibility": "high"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["Google Research page", "GitHub"],
+        "can_auto_run": "yes",
+        "recommended_status": "watchlist"
+      },
+      "sources": [
+        "https://research.google/pubs/natural-questions-a-benchmark-for-question-answering-research/",
+        "https://github.com/google-research-datasets/natural-questions"
+      ],
+      "notes": "Useful historical source for query intent and answer extraction, but not an agentic search benchmark."
+    },
+    {
+      "id": "aimultiple_agentic_search",
+      "name": "AIMultiple Agentic Search API Benchmark",
+      "year": 2026,
+      "maintaining_org": "AIMultiple",
+      "source_type_tags": ["analyst_published", "blog"],
+      "benchmark_family": ["vendor_or_analyst_comparison"],
+      "product_relevance": ["search_api"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes; it directly compares search APIs",
+        "search_output_expected": "retrieved results from commercial APIs",
+        "why_it_matters": "It directly benchmarks search APIs for AI/LLM queries, but methodology must be audited."
+      },
+      "task_design": {
+        "input": "100 real-world AI/LLM queries according to article",
+        "process": "query multiple search APIs and score retrieved results",
+        "output": "API comparison scores",
+        "search_pattern": "result relevance, quality, noise, source type, latency/cost depending on article"
+      },
+      "dataset": {
+        "size": "100 queries and 4000 retrieved results reported",
+        "languages": ["not fully specified"],
+        "corpus_type": "live commercial web search APIs",
+        "live_web": true,
+        "public_data": "methodology/results article; raw dataset availability unclear",
+        "update_pattern": "article/update cadence unknown"
+      },
+      "evaluation": {
+        "primary_metrics": ["LLM-judged relevance", "quality", "noise", "source type"],
+        "judge": "LLM judge reported",
+        "leaderboard": "article comparison",
+        "reproducibility": "low until raw queries/judging prompts are available"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["article page"],
+        "can_auto_run": "not without reconstructing methodology",
+        "recommended_status": "watchlist"
+      },
+      "sources": [
+        "https://aimultiple.com/agentic-search"
+      ],
+      "notes": "Include as market signal, not as trusted scientific benchmark unless raw methodology is reviewed."
+    },
+    {
+      "id": "parallel_quality_benchmarks",
+      "name": "Parallel Quality Benchmarks / SealQA references",
+      "year": 2025,
+      "maintaining_org": "Parallel Web Systems",
+      "source_type_tags": ["vendor_published", "blog"],
+      "benchmark_family": ["vendor_or_analyst_comparison", "deep_search_agent"],
+      "product_relevance": ["search_api", "search_plus_content"],
+      "search_dependency": {
+        "mode": "live_web_tool_required",
+        "search_must_affect_score": true,
+        "replaceable_search_api": "yes in principle, but vendor methodology must be separated from product marketing",
+        "search_output_expected": "answers/evidence from search offerings",
+        "why_it_matters": "Vendor benchmarks often reflect buyer-facing claims about AI-native search API accuracy and price-performance."
+      },
+      "task_design": {
+        "input": "research/search prompts depending on benchmark",
+        "process": "compare web search offerings or task APIs",
+        "output": "accuracy / price-performance claims",
+        "search_pattern": "answer accuracy under web search infrastructure"
+      },
+      "dataset": {
+        "size": "varies by benchmark; SealQA references public/private details should be verified",
+        "languages": ["not fully specified"],
+        "corpus_type": "live web / proprietary API comparisons",
+        "live_web": true,
+        "public_data": "unclear",
+        "update_pattern": "vendor article releases"
+      },
+      "evaluation": {
+        "primary_metrics": ["accuracy", "price-performance"],
+        "judge": "vendor-specific",
+        "leaderboard": "vendor-published comparison",
+        "reproducibility": "low unless data/methodology are public"
+      },
+      "automation": {
+        "weekly_refresh_targets": ["Parallel benchmark pages/blog"],
+        "can_auto_run": "no, unless independent harness is built",
+        "recommended_status": "watchlist"
+      },
+      "sources": [
+        "https://parallel.ai/benchmarks",
+        "https://parallel.ai/blog/benchmarks-task-api-sealqa",
+        "https://parallel.ai/blog/deepsearch-qa"
+      ],
+      "notes": "Track as competitive intelligence and benchmark-design inspiration, not as neutral evidence."
+    }
+  ]
+}

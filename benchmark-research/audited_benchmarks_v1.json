@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-07-09",
+    "language": "zh-CN",
+    "audit_report": "benchmark-research/deep_audit_v1.md",
+    "note": "Lightweight structured cards for database/frontend planning. This is not a full normalized database export."
+  },
+  "benchmarks": [
+    {
+      "id": "facts_search",
+      "name": "FACTS Search",
+      "family": "live_web_search",
+      "product_tags": ["search_api", "search_plus_content"],
+      "search_dependency_modes": ["live_web_tool_required"],
+      "language_scope": ["en"],
+      "task_count_summary": "Paper reports four slices with 328, 932, 268, and 356 examples.",
+      "gold_type": "short_answer",
+      "metrics": ["f1", "accuracy", "attempted_accuracy", "hedging_rate", "average_searches"],
+      "retriever_replaceable": "internal_protocol_only",
+      "provider_fixed": "Brave Search API in official leaderboard",
+      "trace_required": false,
+      "automation_level": "smoke_eval_possible",
+      "data_stability": "benchmark_dataset",
+      "primary_sources": [
+        "https://arxiv.org/html/2512.10791v1",
+        "https://www.kaggle.com/benchmarks/google/facts-search",
+        "https://www.kaggle.com/datasets/deepmind/facts-search-public"
+      ]
+    },
+    {
+      "id": "browsecomp",
+      "name": "BrowseComp",
+      "family": "agentic_browsing",
+      "product_tags": ["search_plus_content", "agent_search"],
+      "search_dependency_modes": ["live_web_tool_required"],
+      "language_scope": ["en"],
+      "task_count_summary": "1266 encrypted public CSV rows.",
+      "gold_type": "short_answer",
+      "metrics": ["accuracy", "calibration_error"],
+      "retriever_replaceable": "requires_custom_agent_harness",
+      "provider_fixed": "none in public simple-evals",
+      "trace_required": false,
+      "automation_level": "schema_sample_now_smoke_eval_with_harness",
+      "data_stability": "questions_fixed_web_evidence_drifting",
+      "primary_sources": [
+        "https://openai.com/index/browsecomp/",
+        "https://arxiv.org/html/2504.12516v1",
+        "https://github.com/openai/simple-evals",
+        "https://openaipublic.blob.core.windows.net/simple-evals/browse_comp_test_set.csv"
+      ]
+    },
+    {
+      "id": "livenewsbench",
+      "name": "LiveNewsBench",
+      "family": "live_web_search",
+      "product_tags": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency_modes": ["live_web_tool_required", "browser_navigation_required"],
+      "language_scope": ["en"],
+      "task_count_summary": "Jan 2026 release: train 612, val 171, test 346, human_verified_test 200.",
+      "gold_type": "short_answer",
+      "metrics": ["accuracy", "used_searches", "used_clicks"],
+      "retriever_replaceable": "yes_via_search_tool",
+      "provider_fixed": "no",
+      "trace_required": true,
+      "automation_level": "smoke_eval_high_priority",
+      "data_stability": "quarterly_release_recent_news",
+      "primary_sources": [
+        "https://arxiv.org/abs/2602.13543",
+        "https://github.com/LiveNewsBench/LiveNewsBench",
+        "https://livenewsbench.com/"
+      ]
+    },
+    {
+      "id": "browsecomp_plus",
+      "name": "BrowseComp-Plus",
+      "family": "fixed_corpus_retrieval",
+      "product_tags": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency_modes": ["fixed_corpus_search_required"],
+      "language_scope": ["en"],
+      "task_count_summary": "README describes about 100K human-verified documents and 830 queries in the expensive-baseline trajectory context.",
+      "gold_type": "short_answer_and_qrels",
+      "metrics": ["accuracy", "recall", "calibration_error", "recall_at_5", "recall_at_100", "recall_at_1000", "ndcg_at_10"],
+      "retriever_replaceable": "yes_custom_searcher",
+      "provider_fixed": "no",
+      "trace_required": true,
+      "automation_level": "retrieval_only_high_priority",
+      "data_stability": "fixed_corpus",
+      "primary_sources": [
+        "https://github.com/texttron/BrowseComp-Plus",
+        "https://huggingface.co/datasets/Tevatron/browsecomp-plus",
+        "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus",
+        "https://arxiv.org/pdf/2508.06600"
+      ]
+    },
+    {
+      "id": "widesearch",
+      "name": "WideSearch",
+      "family": "wide_information_seeking",
+      "product_tags": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency_modes": ["live_web_tool_required"],
+      "language_scope": ["en", "zh"],
+      "task_count_summary": "200 tasks: 100 English and 100 Chinese.",
+      "gold_type": "structured_table",
+      "metrics": ["strict_table_score", "row_precision", "row_recall", "row_f1", "item_precision", "item_recall", "item_f1"],
+      "retriever_replaceable": "yes_custom_search_tools",
+      "provider_fixed": "no",
+      "trace_required": false,
+      "automation_level": "smoke_eval_possible",
+      "data_stability": "fixed_questions_live_web_evidence_drifting",
+      "primary_sources": [
+        "https://arxiv.org/html/2508.07999v1",
+        "https://github.com/ByteDance-Seed/WideSearch",
+        "https://huggingface.co/datasets/ByteDance-Seed/WideSearch"
+      ]
+    },
+    {
+      "id": "deepsearchqa",
+      "name": "DeepSearchQA",
+      "family": "deep_search_agent",
+      "product_tags": ["search_plus_content", "agent_search"],
+      "search_dependency_modes": ["live_web_tool_required"],
+      "language_scope": ["en"],
+      "task_count_summary": "900 prompts; sampled distribution: 584 set-answer and 316 single-answer tasks.",
+      "gold_type": "single_or_set_answer",
+      "metrics": ["f1", "precision", "recall", "accuracy_or_judge_correctness"],
+      "retriever_replaceable": "requires_custom_agent_harness",
+      "provider_fixed": "no",
+      "trace_required": false,
+      "automation_level": "schema_sample_now_smoke_eval_with_harness",
+      "data_stability": "fixed_questions_live_web_evidence_drifting",
+      "primary_sources": [
+        "https://arxiv.org/html/2601.20975v1",
+        "https://huggingface.co/datasets/google/deepsearchqa",
+        "https://www.kaggle.com/benchmarks/google/dsqa"
+      ]
+    },
+    {
+      "id": "sgr_bench",
+      "name": "SGR-Bench",
+      "family": "state_gated_retrieval",
+      "product_tags": ["search_plus_content", "agent_search"],
+      "search_dependency_modes": ["browser_navigation_required", "fixed_corpus_search_required"],
+      "language_scope": ["en", "zh"],
+      "task_count_summary": "100 aligned task records; loadable HF splits are 50 goal and 50 constraint records.",
+      "gold_type": "ordered_table",
+      "metrics": ["item_f1", "row_f1", "pairwise_order_accuracy"],
+      "retriever_replaceable": "agent_environment_dependent",
+      "provider_fixed": "public websites fixed by task",
+      "trace_required": false,
+      "automation_level": "single_case_runner_pending",
+      "data_stability": "stable_public_sources",
+      "primary_sources": [
+        "https://arxiv.org/html/2605.22219v1",
+        "https://huggingface.co/datasets/PKUAIWeb/SGR-BENCH"
+      ]
+    },
+    {
+      "id": "agentsearchbench",
+      "name": "AgentSearchBench",
+      "family": "agent_discovery",
+      "product_tags": ["agent_search"],
+      "search_dependency_modes": ["agent_or_tool_retrieval_required"],
+      "language_scope": ["en"],
+      "task_count_summary": "9759 agents; 66K+ executions; validation 3211 tasks, test 798 tasks.",
+      "gold_type": "execution_grounded_agent_label",
+      "metrics": ["ndcg_at_5", "ndcg_at_20", "precision_at_20", "recall_at_20", "completeness_at_5", "completeness_at_20"],
+      "retriever_replaceable": "yes_for_retrieval_and_rerank",
+      "provider_fixed": "agent pools sourced from public platforms",
+      "trace_required": false,
+      "automation_level": "validation_eval_possible_test_labels_hidden",
+      "data_stability": "versioned_agent_pool_hidden_test_labels",
+      "primary_sources": [
+        "https://bingo-w.github.io/AgentSearchBench/",
+        "https://arxiv.org/html/2604.22436v1",
+        "https://github.com/Bingo-W/AgentSearchBench",
+        "https://huggingface.co/datasets/AgentSearch/AgentSearchBench-Tasks"
+      ]
+    },
+    {
+      "id": "miracl_neuclir_mrtydi",
+      "name": "MIRACL / NeuCLIR / Mr.TyDi",
+      "family": "multilingual_retrieval",
+      "product_tags": ["search_api"],
+      "search_dependency_modes": ["fixed_corpus_search_required"],
+      "language_scope": ["multilingual", "cross_lingual"],
+      "task_count_summary": "MIRACL: 18 languages, 78K queries, 726K judgments. Mr.TyDi: 11 languages. NeuCLIR: CLIR/MLIR/report tasks over news and technical corpora.",
+      "gold_type": "qrels",
+      "metrics": ["ndcg", "recall", "mrr", "map"],
+      "retriever_replaceable": "yes",
+      "provider_fixed": "fixed_corpus",
+      "trace_required": false,
+      "automation_level": "retrieval_baseline_high_priority",
+      "data_stability": "fixed_corpus",
+      "primary_sources": [
+        "https://project-miracl.github.io/",
+        "https://huggingface.co/datasets/miracl/miracl",
+        "https://neuclir.github.io/",
+        "https://pages.nist.gov/trec-browser/trec33/neuclir/data/",
+        "https://github.com/castorini/mr.tydi"
+      ]
+    },
+    {
+      "id": "search_arena",
+      "name": "Search Arena",
+      "family": "search_augmented_llm_behavior",
+      "product_tags": ["search_api", "search_plus_content", "agent_search"],
+      "search_dependency_modes": ["search_trace_or_preference_dataset"],
+      "language_scope": ["multilingual"],
+      "task_count_summary": "24069 conversations and 12652 human preference votes.",
+      "gold_type": "human_preference_vote",
+      "metrics": ["preference_win_rate", "bradley_terry_score", "citation_features"],
+      "retriever_replaceable": "not_for_direct_eval",
+      "provider_fixed": "historical_search_llm_traces",
+      "trace_required": true,
+      "automation_level": "metadata_and_product_insight",
+      "data_stability": "released_trace_dataset",
+      "primary_sources": [
+        "https://arxiv.org/html/2506.05334v1",
+        "https://github.com/lmarena/search-arena",
+        "https://huggingface.co/datasets/lmarena-ai/search-arena-24k"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,544 @@
+{
+  "meta": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-07-09",
+    "language": "zh-CN",
+    "purpose": "Objective benchmark facts for future database/frontend import. Product opinions and priorities are intentionally excluded.",
+    "related_docs": [
+      "benchmark-research/objective_data_model_v1.md",
+      "benchmark-research/initial_runner_specs_v1.md",
+      "benchmark-research/deep_audit_v1.md"
+    ]
+  },
+  "benchmarks": [
+    {
+      "id": "facts_search",
+      "canonical_name": "FACTS Search",
+      "benchmark_family": "live_web_search",
+      "maintainer_org": "Google DeepMind",
+      "sources": [
+        {"source_type": "paper", "url": "https://arxiv.org/html/2512.10791v1", "access_mode": "public"},
+        {"source_type": "leaderboard", "url": "https://www.kaggle.com/benchmarks/google/facts-search", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://www.kaggle.com/datasets/deepmind/facts-search-public", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "record_count": 1884,
+        "record_count_basis": "paper_slice_sum",
+        "splits_or_slices": [
+          {"name": "Hard Tail", "record_count": 328},
+          {"name": "Wiki Two-Hop", "record_count": 932},
+          {"name": "Wiki Multi-Doc", "record_count": 268},
+          {"name": "KG Hops", "record_count": 356}
+        ],
+        "languages": ["en"],
+        "contains_hidden_test": null,
+        "contains_public_examples": true
+      },
+      "task_design": {
+        "task_input_type": "question",
+        "expected_output_type": "short_answer",
+        "gold_type": "answer_key",
+        "requires_fresh_information": false,
+        "requires_multihop": true,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "live_web",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "fixed_provider",
+        "fixed_provider_name": "Brave Search API",
+        "retriever_replaceable": false,
+        "tool_schema_public": true,
+        "records_search_count": true,
+        "records_click_count": false,
+        "records_tool_calls": true
+      },
+      "evaluation": {
+        "judge_type": "llm_judge",
+        "metrics": ["f1", "accuracy", "attempted_accuracy", "hedging_rate", "average_searches"],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": true,
+        "leaderboard_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": false},
+        "schema_sample": {"cadence": "manual", "credentials": ["kaggle_access_if_required"], "runner_available": false},
+        "smoke_eval": {"cadence": "manual", "credentials": ["model_api_key", "judge_model_api_key"], "runner_available": false}
+      }
+    },
+    {
+      "id": "browsecomp",
+      "canonical_name": "BrowseComp",
+      "benchmark_family": "agentic_browsing",
+      "maintainer_org": "OpenAI",
+      "sources": [
+        {"source_type": "website", "url": "https://openai.com/index/browsecomp/", "access_mode": "public"},
+        {"source_type": "paper", "url": "https://arxiv.org/html/2504.12516v1", "access_mode": "public"},
+        {"source_type": "github", "url": "https://github.com/openai/simple-evals", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://openaipublic.blob.core.windows.net/simple-evals/browse_comp_test_set.csv", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "record_count": 1266,
+        "record_count_basis": "computed_from_public_csv",
+        "file_format": "csv",
+        "fields": ["problem", "answer", "problem_topic", "canary"],
+        "languages": ["en"],
+        "contains_public_labels": true,
+        "content_obfuscated": true
+      },
+      "task_design": {
+        "task_input_type": "question",
+        "expected_output_type": "short_answer",
+        "gold_type": "answer_key",
+        "requires_fresh_information": null,
+        "requires_multihop": true,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "live_web",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "user_provided",
+        "fixed_provider_name": null,
+        "retriever_replaceable": true,
+        "tool_schema_public": false,
+        "records_search_count": false,
+        "records_click_count": false,
+        "records_tool_calls": false
+      },
+      "evaluation": {
+        "judge_type": "llm_judge",
+        "metrics": ["accuracy", "calibration_error"],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": true,
+        "evaluation_script_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "smoke_eval": {"cadence": "manual", "credentials": ["model_api_key", "search_api_key", "judge_model_api_key"], "runner_available": false}
+      }
+    },
+    {
+      "id": "livenewsbench",
+      "canonical_name": "LiveNewsBench",
+      "benchmark_family": "live_web_search",
+      "maintainer_org": "LiveNewsBench authors",
+      "sources": [
+        {"source_type": "paper", "url": "https://arxiv.org/abs/2602.13543", "access_mode": "public"},
+        {"source_type": "github", "url": "https://github.com/LiveNewsBench/LiveNewsBench", "access_mode": "public"},
+        {"source_type": "website", "url": "https://livenewsbench.com/", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "record_count_basis": "computed_from_repo_files",
+        "release_observed": "jan_2026_release_2",
+        "splits": [
+          {"name": "train", "record_count": 612},
+          {"name": "val", "record_count": 171},
+          {"name": "test", "record_count": 346},
+          {"name": "human_verified_test", "record_count": 200}
+        ],
+        "fields": ["link", "event_date", "question", "answer", "category"],
+        "languages": ["en"],
+        "release_cadence_claim": "quarterly for two years"
+      },
+      "task_design": {
+        "task_input_type": "question",
+        "expected_output_type": "short_answer",
+        "gold_type": "answer_key",
+        "requires_fresh_information": true,
+        "requires_multihop": true,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "live_web",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "user_provided",
+        "fixed_provider_name": null,
+        "retriever_replaceable": true,
+        "tool_schema_public": true,
+        "records_search_count": true,
+        "records_click_count": true,
+        "records_tool_calls": true,
+        "requires_click_or_full_page": true,
+        "default_budget": {"searches": 5, "clicks": 5}
+      },
+      "evaluation": {
+        "judge_type": "llm_judge",
+        "judge_model_observed": "gpt-4.1",
+        "metrics": ["accuracy", "used_searches", "used_clicks"],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": true,
+        "evaluation_script_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "smoke_eval": {"cadence": "manual", "credentials": ["model_api_key", "search_api_key", "judge_model_api_key"], "runner_available": false}
+      }
+    },
+    {
+      "id": "browsecomp_plus",
+      "canonical_name": "BrowseComp-Plus",
+      "benchmark_family": "fixed_corpus_retrieval",
+      "maintainer_org": "Texttron / Tevatron authors",
+      "sources": [
+        {"source_type": "github", "url": "https://github.com/texttron/BrowseComp-Plus", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/Tevatron/browsecomp-plus", "access_mode": "public_or_token_required"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus", "access_mode": "public"},
+        {"source_type": "paper", "url": "https://arxiv.org/pdf/2508.06600", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "corpus_size_claim": "about 100K human-verified documents",
+        "query_count_claim": 830,
+        "record_count_basis": "official_readme_claim",
+        "contains_qrels": true,
+        "contains_public_labels": true,
+        "contains_run_trajectories": true,
+        "languages": ["en"]
+      },
+      "task_design": {
+        "task_input_type": "query",
+        "expected_output_type": "short_answer",
+        "gold_type": "answer_key_and_qrels",
+        "requires_fresh_information": false,
+        "requires_multihop": true,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "fixed_corpus",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "user_provided",
+        "retriever_replaceable": true,
+        "tool_schema_public": true,
+        "records_tool_calls": true,
+        "records_search_count": true,
+        "records_click_count": false,
+        "tools": ["search", "get_document"]
+      },
+      "evaluation": {
+        "judge_type": "hybrid",
+        "judge_model_observed": "Qwen3-32B",
+        "metrics": ["accuracy", "recall", "calibration_error", "recall@5", "recall@100", "recall@1000", "nDCG@10"],
+        "supports_retrieval_only": true,
+        "supports_end_to_end_agent": true,
+        "evaluation_script_public": true,
+        "submission_mode": "email"
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "manual", "credentials": ["hf_token_if_required"], "runner_available": false},
+        "retrieval_only": {"cadence": "manual", "credentials": ["hf_token_if_required", "search_api_key_if_applicable"], "runner_available": false}
+      }
+    },
+    {
+      "id": "widesearch",
+      "canonical_name": "WideSearch",
+      "benchmark_family": "wide_information_seeking",
+      "maintainer_org": "ByteDance Seed",
+      "sources": [
+        {"source_type": "paper", "url": "https://arxiv.org/html/2508.07999v1", "access_mode": "public"},
+        {"source_type": "github", "url": "https://github.com/ByteDance-Seed/WideSearch", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/ByteDance-Seed/WideSearch", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "record_count": 200,
+        "record_count_basis": "computed_from_hf_jsonl",
+        "language_distribution": {"en": 100, "zh": 100},
+        "contains_gold_tables": true,
+        "fields": ["instance_id", "query", "evaluation", "language"]
+      },
+      "task_design": {
+        "task_input_type": "instruction",
+        "expected_output_type": "table",
+        "gold_type": "structured_table",
+        "requires_fresh_information": null,
+        "requires_multihop": true,
+        "requires_exhaustive_collection": true,
+        "requires_structured_output": true
+      },
+      "search_protocol": {
+        "mode": "live_web",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "user_provided",
+        "retriever_replaceable": true,
+        "tool_schema_public": true,
+        "records_tool_calls": false,
+        "records_search_count": false,
+        "records_click_count": false
+      },
+      "evaluation": {
+        "judge_type": "hybrid",
+        "metrics": ["strict_table_score", "row_precision", "row_recall", "row_f1", "item_precision", "item_recall", "item_f1"],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": true,
+        "evaluation_script_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "smoke_eval": {"cadence": "manual", "credentials": ["model_api_key", "search_api_key", "judge_model_api_key_if_llm_judge_columns"], "runner_available": false}
+      }
+    },
+    {
+      "id": "deepsearchqa",
+      "canonical_name": "DeepSearchQA",
+      "benchmark_family": "deep_search_agent",
+      "maintainer_org": "Google",
+      "sources": [
+        {"source_type": "paper", "url": "https://arxiv.org/html/2601.20975v1", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/google/deepsearchqa", "access_mode": "public"},
+        {"source_type": "leaderboard", "url": "https://www.kaggle.com/benchmarks/google/dsqa", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "record_count": 900,
+        "record_count_basis": "computed_from_hf_csv",
+        "fields": ["problem", "problem_category", "answer", "answer_type"],
+        "answer_type_distribution": {"Set Answer": 584, "Single Answer": 316},
+        "languages": ["en"],
+        "contains_public_labels": true
+      },
+      "task_design": {
+        "task_input_type": "question",
+        "expected_output_type": "short_answer_or_set_answer",
+        "gold_type": "answer_key",
+        "requires_fresh_information": null,
+        "requires_multihop": true,
+        "requires_exhaustive_collection": true,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "live_web",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "user_provided",
+        "retriever_replaceable": true,
+        "tool_schema_public": false,
+        "records_tool_calls": false,
+        "records_search_count": false,
+        "records_click_count": false
+      },
+      "evaluation": {
+        "judge_type": "llm_judge",
+        "judge_model_observed": "Gemini 2.5 Flash in paper",
+        "metrics": ["f1", "precision", "recall"],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": true,
+        "leaderboard_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "smoke_eval": {"cadence": "manual", "credentials": ["model_api_key", "search_api_key", "judge_model_api_key"], "runner_available": false}
+      }
+    },
+    {
+      "id": "sgr_bench",
+      "canonical_name": "SGR-Bench",
+      "benchmark_family": "state_gated_retrieval",
+      "maintainer_org": "PKUAIWeb",
+      "sources": [
+        {"source_type": "paper", "url": "https://arxiv.org/html/2605.22219v1", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/PKUAIWeb/SGR-BENCH", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "aligned_task_records": 100,
+        "loadable_split_counts": {"goal_hf.jsonl": 50, "constraint_hf.jsonl": 50},
+        "record_count_basis": "computed_from_hf_files",
+        "languages": ["en", "zh"],
+        "contains_public_labels": true,
+        "expected_output_family": "ordered_table"
+      },
+      "task_design": {
+        "task_input_type": "website_state_task",
+        "expected_output_type": "table",
+        "gold_type": "structured_table",
+        "requires_fresh_information": false,
+        "requires_multihop": true,
+        "requires_exhaustive_collection": true,
+        "requires_structured_output": true
+      },
+      "search_protocol": {
+        "mode": "state_gated_site",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "not_applicable",
+        "retriever_replaceable": null,
+        "tool_schema_public": null,
+        "records_tool_calls": false,
+        "records_search_count": false,
+        "records_click_count": false,
+        "requires_site_state": true
+      },
+      "evaluation": {
+        "judge_type": "hybrid",
+        "metrics": ["item_level_f1", "row_level_f1", "pairwise_order_accuracy"],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": true,
+        "evaluation_script_public": null
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "smoke_eval": {"cadence": "manual", "credentials": ["browser_or_agent_runtime"], "runner_available": false}
+      }
+    },
+    {
+      "id": "agentsearchbench",
+      "canonical_name": "AgentSearchBench",
+      "benchmark_family": "agent_discovery",
+      "maintainer_org": "AgentSearchBench authors",
+      "sources": [
+        {"source_type": "website", "url": "https://bingo-w.github.io/AgentSearchBench/", "access_mode": "public"},
+        {"source_type": "paper", "url": "https://arxiv.org/html/2604.22436v1", "access_mode": "public"},
+        {"source_type": "github", "url": "https://github.com/Bingo-W/AgentSearchBench", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/AgentSearch/AgentSearchBench-Tasks", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "agent_count_claim": 9759,
+        "execution_count_claim": "66K+",
+        "validation_total": 3211,
+        "test_total": 798,
+        "validation_breakdown": {"single_agent_task_query": 2452, "multi_agent_task_query": 500, "task_description": 259},
+        "test_breakdown": {"single_agent_task_query": 633, "multi_agent_task_query": 100, "task_description": 65},
+        "test_labels_hidden": true,
+        "languages": ["en"]
+      },
+      "task_design": {
+        "task_input_type": "task_or_task_description",
+        "expected_output_type": "ranked_list",
+        "gold_type": "execution_grounded_label",
+        "requires_fresh_information": false,
+        "requires_multihop": null,
+        "requires_structured_output": true
+      },
+      "search_protocol": {
+        "mode": "agent_pool",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "user_provided",
+        "retriever_replaceable": true,
+        "tool_schema_public": null,
+        "records_tool_calls": false,
+        "records_search_count": false,
+        "records_click_count": false,
+        "requires_agent_pool": true
+      },
+      "evaluation": {
+        "judge_type": "qrels_metric",
+        "metrics": ["NDCG@5", "NDCG@20", "Precision@20", "Recall@20", "Completeness@5", "Completeness@20"],
+        "supports_retrieval_only": true,
+        "supports_end_to_end_agent": false,
+        "leaderboard_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "validation_eval": {"cadence": "manual", "credentials": [], "runner_available": false},
+        "probing": {"cadence": "manual", "credentials": ["agent_platform_credentials_if_executing_agents"], "runner_available": false}
+      }
+    },
+    {
+      "id": "miracl",
+      "canonical_name": "MIRACL",
+      "benchmark_family": "multilingual_retrieval",
+      "maintainer_org": "MIRACL authors",
+      "sources": [
+        {"source_type": "website", "url": "https://project-miracl.github.io/", "access_mode": "public"},
+        {"source_type": "paper", "url": "https://aclanthology.org/2023.tacl-1.63/", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/miracl/miracl", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "language_count_claim": 18,
+        "query_count_claim": "78K",
+        "relevance_judgment_count_claim": "726K",
+        "corpus_type": "Wikipedia",
+        "annotation_claim": "native speaker annotation",
+        "contains_qrels": true,
+        "observed_files": [
+          "miracl-v1.0-en/topics/topics.miracl-v1.0-en-dev.tsv",
+          "miracl-v1.0-en/qrels/qrels.miracl-v1.0-en-dev.tsv"
+        ]
+      },
+      "task_design": {
+        "task_input_type": "query",
+        "expected_output_type": "ranked_list",
+        "gold_type": "qrels",
+        "requires_fresh_information": false,
+        "requires_multihop": false,
+        "requires_structured_output": true,
+        "languages": ["multilingual"]
+      },
+      "search_protocol": {
+        "mode": "fixed_corpus",
+        "search_required_for_evaluation": true,
+        "search_provider_policy": "user_provided",
+        "retriever_replaceable": true,
+        "tool_schema_public": false,
+        "records_tool_calls": false,
+        "records_search_count": false,
+        "records_click_count": false
+      },
+      "evaluation": {
+        "judge_type": "qrels_metric",
+        "metrics": ["nDCG@10", "Recall@100", "MRR@10", "MAP"],
+        "supports_retrieval_only": true,
+        "supports_end_to_end_agent": false,
+        "evaluation_script_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "retrieval_only": {"cadence": "manual", "credentials": ["search_api_key_if_applicable"], "runner_available": false}
+      }
+    },
+    {
+      "id": "search_arena",
+      "canonical_name": "Search Arena",
+      "benchmark_family": "search_augmented_llm_behavior",
+      "maintainer_org": "LMArena",
+      "sources": [
+        {"source_type": "paper", "url": "https://arxiv.org/html/2506.05334v1", "access_mode": "public"},
+        {"source_type": "github", "url": "https://github.com/lmarena/search-arena", "access_mode": "public"},
+        {"source_type": "dataset", "url": "https://huggingface.co/datasets/lmarena-ai/search-arena-24k", "access_mode": "public"}
+      ],
+      "dataset_facts": {
+        "conversation_count": 24069,
+        "human_preference_vote_count": 12652,
+        "user_count_claim": "about 11000",
+        "country_count_claim": 136,
+        "model_count_claim": 13,
+        "language_count_claim": "about 90",
+        "contains_search_traces": true,
+        "file_observed": "data/search-arena-chat-24k.parquet",
+        "file_size_bytes_observed": 400678009
+      },
+      "task_design": {
+        "task_input_type": "conversation",
+        "expected_output_type": "preference_pair",
+        "gold_type": "human_vote",
+        "requires_fresh_information": null,
+        "requires_multihop": null,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "trace_dataset",
+        "search_required_for_evaluation": false,
+        "search_provider_policy": "not_applicable",
+        "retriever_replaceable": false,
+        "tool_schema_public": null,
+        "records_tool_calls": true,
+        "records_search_count": true,
+        "records_click_count": null
+      },
+      "evaluation": {
+        "judge_type": "human_vote",
+        "metrics": ["preference_win_rate", "bradley_terry_score", "citation_features"],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": false,
+        "leaderboard_public": false
+      },
+      "automation_checks": {
+        "metadata_refresh": {"cadence": "weekly", "credentials": [], "runner_available": true},
+        "schema_sample": {"cadence": "manual", "credentials": [], "runner_available": false},
+        "smoke_eval": {"cadence": "not_applicable", "credentials": [], "runner_available": false}
+      }
+    }
+  ]
+}
