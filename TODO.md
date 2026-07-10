@@ -6,6 +6,8 @@
 
 ## P0 数据模型与数据清洗
 
+- [x] 明确主库只收 `search_api` 和 `agent_plus_search` 两类 benchmark。
+- [x] 将 `provided_context_only`、`no_search_dependency`、`out_of_scope` 条目移出主库并保留排除记录。
 - [ ] 固化 v1 数据模型，覆盖 benchmark、dataset、sample task、source、leaderboard result、provider appearance、refresh run。
 - [ ] 明确定义每个字段的类型、允许值、是否必填、来源要求和更新时间字段。
 - [ ] 把现有 JSON 数据按 v1 模型清洗一遍，消除同义字段、临时字段和展示层字段。
@@ -73,6 +75,7 @@
 ## P2 团队协作流程
 
 - [ ] 定义新 benchmark 收录标准。
+- [ ] 新增 benchmark 时必须先确认 `inclusion_status`、`evaluation_target` 和 `search_component_role`。
 - [ ] 定义 benchmark 信息从 pending 到 confirmed 的确认规则。
 - [ ] 定义数据来源优先级：官方、论文、代码、dataset、leaderboard、第三方报告、厂商页面。
 - [ ] 定义谁负责 review 新增数据和每周自动刷新 diff。

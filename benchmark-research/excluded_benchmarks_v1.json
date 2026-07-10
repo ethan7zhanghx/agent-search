@@ -1,0 +1,276 @@
+{
+  "meta": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-07-10",
+    "language": "zh-CN",
+    "purpose": "Records reviewed but excluded from the main Agent Search benchmark registry.",
+    "exclusion_reason_values": [
+      "provided_context_only",
+      "no_search_dependency",
+      "out_of_scope"
+    ]
+  },
+  "benchmarks": [
+    {
+      "id": "search_arena",
+      "canonical_name": "Search Arena",
+      "benchmark_family": "search_augmented_llm_behavior",
+      "maintainer_org": "LMArena",
+      "sources": [
+        {
+          "source_type": "paper",
+          "url": "https://arxiv.org/html/2506.05334v1",
+          "access_mode": "public"
+        },
+        {
+          "source_type": "github",
+          "url": "https://github.com/lmarena/search-arena",
+          "access_mode": "public"
+        },
+        {
+          "source_type": "dataset",
+          "url": "https://huggingface.co/datasets/lmarena-ai/search-arena-24k",
+          "access_mode": "public"
+        }
+      ],
+      "dataset_facts": {
+        "conversation_count": 24069,
+        "human_preference_vote_count": 12652,
+        "user_count_claim": "about 11000",
+        "country_count_claim": 136,
+        "model_count_claim": 13,
+        "language_count_claim": "about 90",
+        "contains_search_traces": true,
+        "file_observed": "data/search-arena-chat-24k.parquet",
+        "file_size_bytes_observed": 400678009
+      },
+      "task_design": {
+        "task_input_type": "conversation",
+        "expected_output_type": "preference_pair",
+        "gold_type": "human_vote",
+        "requires_fresh_information": null,
+        "requires_multihop": null,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "trace_dataset",
+        "search_required_for_evaluation": false,
+        "search_provider_policy": "not_applicable",
+        "retriever_replaceable": false,
+        "tool_schema_public": null,
+        "records_tool_calls": true,
+        "records_search_count": true,
+        "records_click_count": null
+      },
+      "evaluation": {
+        "judge_type": "human_vote",
+        "metrics": [
+          "preference_win_rate",
+          "bradley_terry_score",
+          "citation_features"
+        ],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": false,
+        "leaderboard_public": false
+      },
+      "automation_checks": {
+        "metadata_refresh": {
+          "cadence": "weekly",
+          "credentials": [],
+          "runner_available": true
+        },
+        "schema_sample": {
+          "cadence": "manual",
+          "credentials": [],
+          "runner_available": false
+        },
+        "smoke_eval": {
+          "cadence": "not_applicable",
+          "credentials": [],
+          "runner_available": false
+        }
+      },
+      "inclusion_status": "excluded",
+      "excluded_at": "2026-07-10",
+      "exclusion_reason": "provided_context_only",
+      "exclusion_notes": "Public record is a trace/preference dataset for search-augmented LLM behavior; search API quality is not the system under test and search is not required during evaluation."
+    },
+    {
+      "id": "simpleqa",
+      "canonical_name": "SimpleQA",
+      "record_type": "benchmark",
+      "benchmark_family": "short_form_factual_qa",
+      "maintainer_org": "OpenAI",
+      "sources": [
+        {
+          "source_type": "website",
+          "url": "https://openai.com/index/introducing-simpleqa/",
+          "access_mode": "public"
+        },
+        {
+          "source_type": "paper",
+          "url": "https://arxiv.org/html/2411.04368v1",
+          "access_mode": "public"
+        },
+        {
+          "source_type": "github",
+          "url": "https://github.com/openai/simple-evals/blob/main/simpleqa_eval.py",
+          "access_mode": "public"
+        },
+        {
+          "source_type": "dataset",
+          "url": "https://openaipublic.blob.core.windows.net/simple-evals/simple_qa_test_set.csv",
+          "access_mode": "public"
+        },
+        {
+          "source_type": "leaderboard",
+          "url": "https://www.kaggle.com/benchmarks/openai/simpleqa/leaderboard",
+          "access_mode": "public"
+        }
+      ],
+      "dataset_facts": {
+        "record_count": 4326,
+        "record_count_basis": "computed_from_public_csv",
+        "file_format": "csv",
+        "fields": [
+          "metadata",
+          "problem",
+          "answer"
+        ],
+        "languages": [
+          "en"
+        ],
+        "contains_public_labels": true
+      },
+      "task_design": {
+        "task_input_type": "question",
+        "expected_output_type": "short_answer",
+        "gold_type": "answer_key",
+        "requires_fresh_information": false,
+        "requires_multihop": false,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "static_qa",
+        "search_required_for_evaluation": false,
+        "search_provider_policy": "not_applicable",
+        "fixed_provider_name": null,
+        "retriever_replaceable": null,
+        "tool_schema_public": false,
+        "records_search_count": false,
+        "records_click_count": false,
+        "records_tool_calls": false
+      },
+      "evaluation": {
+        "judge_type": "llm_judge",
+        "metrics": [
+          "accuracy",
+          "attempted_accuracy",
+          "f1"
+        ],
+        "supports_retrieval_only": false,
+        "supports_end_to_end_agent": false,
+        "evaluation_script_public": true,
+        "leaderboard_public": true
+      },
+      "automation_checks": {
+        "metadata_refresh": {
+          "cadence": "weekly",
+          "credentials": [],
+          "runner_available": true
+        },
+        "schema_sample": {
+          "cadence": "weekly",
+          "credentials": [],
+          "runner_available": true
+        },
+        "smoke_eval": {
+          "cadence": "manual",
+          "credentials": [
+            "model_api_key",
+            "judge_model_api_key"
+          ],
+          "runner_available": false
+        }
+      },
+      "inclusion_status": "excluded",
+      "excluded_at": "2026-07-10",
+      "exclusion_reason": "no_search_dependency",
+      "exclusion_notes": "SimpleQA is a static factual QA benchmark. Search APIs may be used by vendor evaluations built on top of it, but the benchmark itself does not require or evaluate search."
+    },
+    {
+      "id": "parallel_comparison_article",
+      "canonical_name": "Parallel comparison article",
+      "record_type": "vendor_published_article",
+      "benchmark_family": "vendor_published_comparison",
+      "maintainer_org": "Parallel",
+      "sources": [
+        {
+          "source_type": "article",
+          "url": "https://parallel.ai/articles/openai-web-search-vs-parallel-vs-exa-vs-tavily-how-to-choose",
+          "access_mode": "public"
+        }
+      ],
+      "dataset_facts": {
+        "record_count_basis": "not_applicable_comparison_article",
+        "source_datasets_observed": [
+          "SimpleQA",
+          "FreshQA"
+        ],
+        "contains_public_examples": null,
+        "languages": [
+          "en"
+        ]
+      },
+      "task_design": {
+        "task_input_type": "not_applicable_article",
+        "expected_output_type": "reported_comparison",
+        "gold_type": "not_applicable_article",
+        "requires_fresh_information": null,
+        "requires_multihop": null,
+        "requires_structured_output": false
+      },
+      "search_protocol": {
+        "mode": "vendor_comparison",
+        "search_required_for_evaluation": null,
+        "search_provider_policy": "vendor_published_article",
+        "fixed_provider_name": null,
+        "retriever_replaceable": null,
+        "tool_schema_public": null,
+        "records_search_count": null,
+        "records_click_count": null,
+        "records_tool_calls": null
+      },
+      "evaluation": {
+        "judge_type": "reported_claims",
+        "metrics": [
+          "claimed benchmark values"
+        ],
+        "supports_retrieval_only": null,
+        "supports_end_to_end_agent": null,
+        "evaluation_script_public": null
+      },
+      "automation_checks": {
+        "metadata_refresh": {
+          "cadence": "weekly",
+          "credentials": [],
+          "runner_available": true
+        },
+        "schema_sample": {
+          "cadence": "not_applicable",
+          "credentials": [],
+          "runner_available": false
+        },
+        "smoke_eval": {
+          "cadence": "not_applicable",
+          "credentials": [],
+          "runner_available": false
+        }
+      },
+      "inclusion_status": "excluded",
+      "excluded_at": "2026-07-10",
+      "exclusion_reason": "out_of_scope",
+      "exclusion_notes": "This is a vendor comparison article with benchmark claims, not a standalone benchmark or evaluation dataset."
+    }
+  ]
+}
