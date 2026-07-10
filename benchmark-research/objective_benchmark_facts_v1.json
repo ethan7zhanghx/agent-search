@@ -1,19 +1,24 @@
 {
   "meta": {
-    "schema_version": "0.3.0",
+    "schema_version": "1.0.0",
     "generated_at": "2026-07-09",
     "language": "zh-CN",
-    "purpose": "Objective benchmark facts for future database/frontend import. Main benchmark entries include only search_api or agent_plus_search evaluations; excluded records are stored separately.",
+    "purpose": "Objective v1 benchmark facts for frontend and future database import. Main entries include only search_api or agent_plus_search evaluations.",
     "related_docs": [
       "benchmark-research/objective_data_model_v1.md",
       "benchmark-research/initial_runner_specs_v1.md",
-      "benchmark-research/deep_audit_v1.md"
+      "benchmark-research/deep_audit_v1.md",
+      "benchmark-research/data_model_v1.json"
     ],
     "inclusion_policy": "Only benchmarks where search result quality, search API behavior, or agent use of search materially affects scoring are included in the main registry.",
     "evaluation_target_values": [
       "search_api",
       "agent_plus_search"
-    ]
+    ],
+    "data_model_version": "1.0.0",
+    "last_updated_at": "2026-07-10",
+    "entity_type": "benchmark_registry",
+    "canonical_model": "benchmark-research/data_model_v1.json"
   },
   "benchmarks": [
     {
@@ -25,17 +30,20 @@
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2512.10791v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "leaderboard",
           "url": "https://www.kaggle.com/benchmarks/google/facts-search",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://www.kaggle.com/datasets/deepmind/facts-search-public",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -122,7 +130,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "fixed_protocol_dependency",
-      "evaluation_target_rationale": "Scores end-to-end answer quality for models using a fixed Brave Search tool; the search API is protocol infrastructure rather than a replaceable system under test."
+      "evaluation_target_rationale": "Scores end-to-end answer quality for models using a fixed Brave Search tool; the search API is protocol infrastructure rather than a replaceable system under test.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "browsecomp",
@@ -133,22 +143,26 @@
         {
           "source_type": "website",
           "url": "https://openai.com/index/browsecomp/",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2504.12516v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "github",
           "url": "https://github.com/openai/simple-evals",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://openaipublic.blob.core.windows.net/simple-evals/browse_comp_test_set.csv",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -220,7 +234,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "tool_dependency",
-      "evaluation_target_rationale": "Evaluates an agent/model answering difficult questions with web browsing or search as a tool dependency."
+      "evaluation_target_rationale": "Evaluates an agent/model answering difficult questions with web browsing or search as a tool dependency.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "livenewsbench",
@@ -231,17 +247,20 @@
         {
           "source_type": "paper",
           "url": "https://arxiv.org/abs/2602.13543",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "github",
           "url": "https://github.com/LiveNewsBench/LiveNewsBench",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "website",
           "url": "https://livenewsbench.com/",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -337,7 +356,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "tool_dependency",
-      "evaluation_target_rationale": "Evaluates live-news QA with bounded searches and clicks, where search use affects final answer quality."
+      "evaluation_target_rationale": "Evaluates live-news QA with bounded searches and clicks, where search use affects final answer quality.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "browsecomp_plus",
@@ -348,22 +369,26 @@
         {
           "source_type": "github",
           "url": "https://github.com/texttron/BrowseComp-Plus",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/Tevatron/browsecomp-plus",
-          "access_mode": "public_or_token_required"
+          "access_mode": "public_or_token_required",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/Tevatron/browsecomp-plus-corpus",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "paper",
           "url": "https://arxiv.org/pdf/2508.06600",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -441,7 +466,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "tool_dependency",
-      "evaluation_target_rationale": "Supports retrieval metrics, but the benchmark design also evaluates end-to-end agent QA over a fixed corpus with search/get_document tools."
+      "evaluation_target_rationale": "Supports retrieval metrics, but the benchmark design also evaluates end-to-end agent QA over a fixed corpus with search/get_document tools.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "widesearch",
@@ -452,17 +479,20 @@
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2508.07999v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "github",
           "url": "https://github.com/ByteDance-Seed/WideSearch",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/ByteDance-Seed/WideSearch",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -538,7 +568,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "tool_dependency",
-      "evaluation_target_rationale": "Evaluates wide information-seeking task completion where search is required to gather evidence for final structured answers."
+      "evaluation_target_rationale": "Evaluates wide information-seeking task completion where search is required to gather evidence for final structured answers.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "deepsearchqa",
@@ -549,17 +581,20 @@
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2601.20975v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/google/deepsearchqa",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "leaderboard",
           "url": "https://www.kaggle.com/benchmarks/google/dsqa",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -635,7 +670,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "tool_dependency",
-      "evaluation_target_rationale": "Evaluates deep search question answering with search-enabled agents or models."
+      "evaluation_target_rationale": "Evaluates deep search question answering with search-enabled agents or models.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "sgr_bench",
@@ -646,12 +683,14 @@
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2605.22219v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/PKUAIWeb/SGR-BENCH",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -721,7 +760,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "tool_dependency",
-      "evaluation_target_rationale": "Evaluates retrieval through state-gated interfaces where navigation/search behavior affects task completion."
+      "evaluation_target_rationale": "Evaluates retrieval through state-gated interfaces where navigation/search behavior affects task completion.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "agentsearchbench",
@@ -732,22 +773,26 @@
         {
           "source_type": "website",
           "url": "https://bingo-w.github.io/AgentSearchBench/",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2604.22436v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "github",
           "url": "https://github.com/Bingo-W/AgentSearchBench",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/AgentSearch/AgentSearchBench-Tasks",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -830,7 +875,9 @@
       "inclusion_status": "included",
       "evaluation_target": "search_api",
       "search_component_role": "primary_system_under_test",
-      "evaluation_target_rationale": "Evaluates agent/task retrieval from an agent pool with qrels-style ranking metrics; retrieval is the primary system under test."
+      "evaluation_target_rationale": "Evaluates agent/task retrieval from an agent pool with qrels-style ranking metrics; retrieval is the primary system under test.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "miracl",
@@ -841,17 +888,20 @@
         {
           "source_type": "website",
           "url": "https://project-miracl.github.io/",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "paper",
           "url": "https://aclanthology.org/2023.tacl-1.63/",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/miracl/miracl",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -921,7 +971,9 @@
       "inclusion_status": "included",
       "evaluation_target": "search_api",
       "search_component_role": "primary_system_under_test",
-      "evaluation_target_rationale": "Evaluates multilingual retrieval over fixed corpora with ranking metrics; retriever/search quality is the system under test."
+      "evaluation_target_rationale": "Evaluates multilingual retrieval over fixed corpora with ranking metrics; retriever/search quality is the system under test.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "tavily_search_evals",
@@ -933,17 +985,20 @@
         {
           "source_type": "github",
           "url": "https://github.com/tavily-ai/tavily-search-evals",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://raw.githubusercontent.com/tavily-ai/tavily-search-evals/main/datasets/simple_qa_test_set.csv",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "dataset",
           "url": "https://raw.githubusercontent.com/tavily-ai/tavily-search-evals/main/datasets/document_relevance_dynamic_test_set.json",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -1026,7 +1081,9 @@
       "inclusion_status": "included",
       "evaluation_target": "search_api",
       "search_component_role": "primary_system_under_test",
-      "evaluation_target_rationale": "A provider-selectable search API evaluation framework where Tavily, Exa, Brave and other providers can be compared."
+      "evaluation_target_rationale": "A provider-selectable search API evaluation framework where Tavily, Exa, Brave and other providers can be compared.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "exa_api_evals",
@@ -1038,12 +1095,14 @@
         {
           "source_type": "blog",
           "url": "https://exa.ai/blog/api-evals",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         },
         {
           "source_type": "github",
           "url": "https://github.com/exa-labs/benchmarks",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -1109,7 +1168,9 @@
       "inclusion_status": "included",
       "evaluation_target": "search_api",
       "search_component_role": "primary_system_under_test",
-      "evaluation_target_rationale": "Vendor-published API evaluation for search result quality and SimpleQA-style search-backed answering."
+      "evaluation_target_rationale": "Vendor-published API evaluation for search result quality and SimpleQA-style search-backed answering.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "brave_simpleqa_comparison",
@@ -1121,7 +1182,8 @@
         {
           "source_type": "blog",
           "url": "https://brave.com/blog/ai-grounding/",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -1187,7 +1249,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "primary_system_under_test",
-      "evaluation_target_rationale": "Vendor-published comparison of Brave AI Grounding/search-backed answering against other providers on SimpleQA-style metrics."
+      "evaluation_target_rationale": "Vendor-published comparison of Brave AI Grounding/search-backed answering against other providers on SimpleQA-style metrics.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "aimultiple_agentic_search_benchmark",
@@ -1199,7 +1263,8 @@
         {
           "source_type": "article",
           "url": "https://aimultiple.com/agentic-search",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -1265,7 +1330,9 @@
       "inclusion_status": "included",
       "evaluation_target": "search_api",
       "search_component_role": "primary_system_under_test",
-      "evaluation_target_rationale": "Third-party comparison scores agentic search providers directly, including Brave, Exa and Tavily."
+      "evaluation_target_rationale": "Third-party comparison scores agentic search providers directly, including Brave, Exa and Tavily.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "wiser_search",
@@ -1277,7 +1344,8 @@
         {
           "source_type": "blog",
           "url": "https://parallel.ai/blog/search-api-benchmark",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-09"
         }
       ],
       "dataset_facts": {
@@ -1337,7 +1405,9 @@
       "inclusion_status": "included",
       "evaluation_target": "agent_plus_search",
       "search_component_role": "tool_dependency",
-      "evaluation_target_rationale": "Compares MCP/tool-calling search systems inside LLM answer generation; search tool quality affects final accuracy."
+      "evaluation_target_rationale": "Compares MCP/tool-calling search systems inside LLM answer generation; search tool quality affects final accuracy.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-09"
     }
   ]
 }

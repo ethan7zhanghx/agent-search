@@ -1,6 +1,6 @@
 {
   "meta": {
-    "schema_version": "0.1.0",
+    "schema_version": "1.0.0",
     "generated_at": "2026-07-09",
     "purpose": "Track where competitor search APIs/providers appear in public benchmark, score, and evaluation contexts.",
     "tracked_competitors": [
@@ -13,7 +13,11 @@
       "third_party",
       "vendor_published",
       "code_repository"
-    ]
+    ],
+    "data_model_version": "1.0.0",
+    "last_updated_at": "2026-07-10",
+    "entity_type": "provider_appearance_registry",
+    "canonical_model": "benchmark-research/data_model_v1.json"
   },
   "appearances": [
     {
@@ -24,8 +28,9 @@
       "source_url": "https://arxiv.org/html/2512.10791v1",
       "score_or_metric": null,
       "details": "FACTS Search official leaderboard uses Brave Search API as the fixed search tool for all model evaluations.",
-      "frontend_display_group": "Official Benchmark Protocol",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "facts_search",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Tavily",
@@ -35,8 +40,9 @@
       "source_url": "https://github.com/tavily-ai/tavily-search-evals",
       "score_or_metric": null,
       "details": "Tavily's public eval framework supports Tavily, Exa, Brave, Google via Serper, Perplexity Search, Perplexity, and GPTR. It includes SimpleQA and a document relevance benchmark.",
-      "frontend_display_group": "Provider Eval Frameworks",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "tavily_search_evals",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Exa",
@@ -46,8 +52,9 @@
       "source_url": "https://github.com/tavily-ai/tavily-search-evals",
       "score_or_metric": null,
       "details": "Exa is one of the out-of-the-box providers supported by Tavily's public search API eval framework.",
-      "frontend_display_group": "Provider Eval Frameworks",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "tavily_search_evals",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Brave",
@@ -57,8 +64,9 @@
       "source_url": "https://github.com/tavily-ai/tavily-search-evals",
       "score_or_metric": null,
       "details": "Brave is one of the out-of-the-box providers supported by Tavily's public search API eval framework.",
-      "frontend_display_group": "Provider Eval Frameworks",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "tavily_search_evals",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Tavily",
@@ -72,8 +80,9 @@
         "unit": "percent"
       },
       "details": "Tavily reports 93.33% accuracy on OpenAI SimpleQA using Tavily real-time search and GPT-4.1 answer generation. This is grouped under Tavily Search Evals because static SimpleQA itself is excluded from the main registry.",
-      "frontend_display_group": "Vendor-Published Scores",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "tavily_search_evals",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Exa",
@@ -83,8 +92,9 @@
       "source_url": "https://exa.ai/blog/api-evals",
       "score_or_metric": null,
       "details": "Exa published API evals for SimpleQA and a MSMARCO-inspired search result relevance evaluation. The page states Exa tops its SimpleQA chart but the accessible text exposes methodology more clearly than exact table values.",
-      "frontend_display_group": "Vendor-Published Scores",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "exa_api_evals",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Brave",
@@ -97,8 +107,9 @@
         "value": "Brave AI Grounding F1 92.1%, Acc 90.78%, Acc* 93.4%; AI Grounding Research With Reasoning multi-search F1 94.1%, Acc 93.25%, Acc* 94.9%"
       },
       "details": "Brave compares Brave AI Grounding against Perplexity, Tavily, and Exa on SimpleQA-style metrics. This is grouped under Brave SimpleQA Comparison because static SimpleQA itself is excluded from the main registry.",
-      "frontend_display_group": "Vendor-Published Scores",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "brave_simpleqa_comparison",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Tavily",
@@ -112,8 +123,9 @@
         "unit": "percent"
       },
       "details": "Brave's comparison table lists Tavily + GPT-4.1 with Acc* 93.3%. This is a Brave-published comparison and should be displayed as vendor-published.",
-      "frontend_display_group": "Competitor Comparison Mentions",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "brave_simpleqa_comparison",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Exa",
@@ -126,8 +138,9 @@
         "value": "Exa Unknown 85.83%; Exa Research 91.6%; Exa Research Pro 94.9%"
       },
       "details": "Brave's comparison table lists several Exa-related SimpleQA values. This is a Brave-published comparison and should be displayed as vendor-published.",
-      "frontend_display_group": "Competitor Comparison Mentions",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "brave_simpleqa_comparison",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Brave",
@@ -140,8 +153,9 @@
         "value": 14.89
       },
       "details": "AIMultiple reports Brave Search as the top Agent Score provider in its 2026 agentic search benchmark and reports 669 ms latency.",
-      "frontend_display_group": "Third-Party Comparisons",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "aimultiple_agentic_search_benchmark",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Exa",
@@ -154,8 +168,9 @@
         "value": 14.39
       },
       "details": "AIMultiple reports Exa ranked third overall with Agent Score 14.39 and around 1.2 s latency.",
-      "frontend_display_group": "Third-Party Comparisons",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "aimultiple_agentic_search_benchmark",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Tavily",
@@ -168,8 +183,9 @@
         "value": 13.67
       },
       "details": "AIMultiple reports Tavily ranked fifth overall with Agent Score 13.67 and around 998 ms latency.",
-      "frontend_display_group": "Third-Party Comparisons",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "aimultiple_agentic_search_benchmark",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Exa",
@@ -182,8 +198,9 @@
         "value": "GPT-4.1 w/ Exa Search MCP 58.67%; o4-mini w/ Exa Search MCP 61.73%; o3 w/ Exa Search MCP 56.12%; Sonnet 4 w/ Exa Search MCP 67.13%"
       },
       "details": "Parallel's WISER-Search comparison includes Exa Search MCP/tool calling against Parallel MCP and native search across multiple LLMs.",
-      "frontend_display_group": "Vendor-Published Comparisons",
-      "inclusion_status": "included"
+      "inclusion_status": "included",
+      "benchmark_id": "wiser_search",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Tavily",
@@ -193,9 +210,10 @@
       "source_url": "https://parallel.ai/articles/openai-web-search-vs-parallel-vs-exa-vs-tavily-how-to-choose",
       "score_or_metric": null,
       "details": "Parallel compares OpenAI web search, Parallel, Exa, and Tavily on architecture, cost, freshness, and benchmark claims; Tavily appears as a compared provider rather than in a directly extractable table in the accessible text.",
-      "frontend_display_group": "Vendor-Published Comparisons",
       "inclusion_status": "excluded",
-      "exclusion_reason": "out_of_scope"
+      "exclusion_reason": "out_of_scope",
+      "benchmark_id": "parallel_comparison_article",
+      "last_checked_at": "2026-07-09"
     },
     {
       "provider": "Exa",
@@ -208,24 +226,10 @@
         "value": "Exa 91% on SimpleQA and 24% on FreshQA as reported by Parallel"
       },
       "details": "Parallel's comparison article references Exa benchmark performance on SimpleQA and FreshQA. This should be shown as vendor-published comparison, not independent benchmark truth.",
-      "frontend_display_group": "Vendor-Published Comparisons",
       "inclusion_status": "excluded",
-      "exclusion_reason": "out_of_scope"
+      "exclusion_reason": "out_of_scope",
+      "benchmark_id": "parallel_comparison_article",
+      "last_checked_at": "2026-07-09"
     }
-  ],
-  "frontend_notes": {
-    "default_grouping": [
-      "provider",
-      "frontend_display_group",
-      "benchmark_or_eval"
-    ],
-    "must_show_source_independence": true,
-    "do_not_mix_with_official_leaderboards": true,
-    "suggested_filters": [
-      "provider",
-      "appearance_type",
-      "source_independence",
-      "benchmark_or_eval"
-    ]
-  }
+  ]
 }

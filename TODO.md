@@ -8,14 +8,14 @@
 
 - [x] 明确主库只收 `search_api` 和 `agent_plus_search` 两类 benchmark。
 - [x] 将 `provided_context_only`、`no_search_dependency`、`out_of_scope` 条目移出主库并保留排除记录。
-- [ ] 固化 v1 数据模型，覆盖 benchmark、dataset、sample task、source、leaderboard result、provider appearance、refresh run。
-- [ ] 明确定义每个字段的类型、允许值、是否必填、来源要求和更新时间字段。
-- [ ] 把现有 JSON 数据按 v1 模型清洗一遍，消除同义字段、临时字段和展示层字段。
-- [ ] 为 `benchmark-research/objective_benchmark_facts_v1.json` 增加字段完整性检查。
-- [ ] 为 `benchmark-research/dataset_samples_v1.json` 增加样例结构检查。
-- [ ] 为 `benchmark-research/public_result_snapshots_v1.json` 增加 leaderboard 结果结构检查。
-- [ ] 为 `benchmark-research/competitor_visibility_v1.json` 增加服务商出现记录结构检查。
-- [ ] 明确哪些字段后续应迁移到数据库，哪些字段保留为来源快照或调研备注。
+- [x] 固化 v1 数据模型，覆盖 benchmark、dataset、sample task、source、leaderboard result、provider appearance、refresh run。
+- [x] 明确定义每个字段的类型、允许值、是否必填、来源要求和更新时间字段。
+- [x] 把现有 JSON 数据按 v1 模型清洗一遍，消除同义字段、临时字段和展示层字段。
+- [x] 为 `benchmark-research/objective_benchmark_facts_v1.json` 增加字段完整性检查。
+- [x] 为 `benchmark-research/dataset_samples_v1.json` 增加样例结构检查。
+- [x] 为 `benchmark-research/public_result_snapshots_v1.json` 增加 leaderboard 结果结构检查。
+- [x] 为 `benchmark-research/competitor_visibility_v1.json` 增加服务商出现记录结构检查。
+- [x] 明确哪些字段后续应迁移到数据库，哪些字段保留为来源快照或调研备注。
 
 ## P0 benchmark 与 dataset 补齐
 

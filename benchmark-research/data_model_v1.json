@@ -1,0 +1,858 @@
+{
+  "schema_version": "1.0.0",
+  "data_model_version": "1.0.0",
+  "generated_at": "2026-07-10",
+  "last_updated_at": "2026-07-10",
+  "canonical_model": "benchmark-research/data_model_v1.json",
+  "language": "zh-CN",
+  "purpose": "Machine-readable v1 field contract for Agent Search benchmark research data and future database migration.",
+  "storage_class_values": [
+    "database",
+    "source_snapshot",
+    "research_note"
+  ],
+  "source_requirement_values": [
+    "required_url",
+    "required_public_source",
+    "derived_from_source",
+    "manual_research_note",
+    "system_generated"
+  ],
+  "entities": {
+    "benchmark": {
+      "description": "One included or reviewed benchmark/evaluation identity.",
+      "primary_json": "benchmark-research/objective_benchmark_facts_v1.json",
+      "future_database_table": "benchmarks",
+      "fields": {
+        "id": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "canonical_name": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "benchmark_family": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "agent_discovery",
+            "agentic_browsing",
+            "deep_search_agent",
+            "fixed_corpus_retrieval",
+            "live_web_search",
+            "multilingual_retrieval",
+            "search_api_eval_framework",
+            "search_augmented_llm_behavior",
+            "short_form_factual_qa",
+            "state_gated_retrieval",
+            "third_party_agentic_search_eval",
+            "vendor_published_comparison",
+            "wide_information_seeking"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "maintainer_org": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "inclusion_status": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "included",
+            "excluded"
+          ],
+          "source_requirement": "manual_research_note",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "evaluation_target": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "search_api",
+            "agent_plus_search"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_component_role": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "primary_system_under_test",
+            "tool_dependency",
+            "fixed_protocol_dependency"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "evaluation_target_rationale": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "manual_research_note",
+          "updated_by": "manual_review",
+          "storage_class": "research_note"
+        },
+        "record_type": {
+          "type": "enum|null",
+          "required": false,
+          "allowed_values": [
+            "evaluation_framework",
+            "vendor_evaluation",
+            "vendor_published_comparison",
+            "third_party_comparison"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "updated_at": {
+          "type": "date",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "last_checked_at": {
+          "type": "date",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "sources": {
+          "type": "source[]",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "dataset_facts": {
+          "type": "object",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "source_snapshot"
+        },
+        "task_design": {
+          "type": "object",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "task_design.task_input_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "instruction",
+            "question",
+            "question_or_query",
+            "query",
+            "task_description",
+            "task_or_task_description",
+            "website_state_task"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "task_design.expected_output_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "answer",
+            "answer_or_search_results",
+            "ranked_list",
+            "report",
+            "search_results",
+            "set_answer",
+            "short_answer",
+            "short_answer_or_set_answer",
+            "table",
+            "structured_table"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "task_design.gold_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "answer_key",
+            "answer_key_and_qrels",
+            "answer_key_or_llm_judge",
+            "execution_grounded_label",
+            "human_preference",
+            "judge_score",
+            "llm_judge_or_answer_key",
+            "qrels",
+            "structured_table"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol": {
+          "type": "object",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.mode": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "agent_pool",
+            "fixed_corpus",
+            "live_web",
+            "search_api_eval_framework",
+            "state_gated_site",
+            "third_party_report",
+            "vendor_comparison"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.search_required_for_evaluation": {
+          "type": "boolean",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.search_provider_policy": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "benchmark_defined",
+            "compared_providers",
+            "fixed_provider",
+            "not_applicable",
+            "provider_selectable",
+            "unknown",
+            "user_provided",
+            "vendor_published_comparison"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.fixed_provider_name": {
+          "type": "string|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.retriever_replaceable": {
+          "type": "boolean|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.tool_schema_public": {
+          "type": "boolean|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.records_tool_calls": {
+          "type": "boolean|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.records_search_count": {
+          "type": "boolean|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "search_protocol.records_click_count": {
+          "type": "boolean|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "evaluation": {
+          "type": "object",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "evaluation.metrics": {
+          "type": "string[]",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "evaluation.judge_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "answer_key",
+            "code_defined",
+            "exact_match",
+            "hybrid",
+            "human_vote",
+            "llm_judge",
+            "llm_judge_or_answer_key",
+            "qrels_metric",
+            "reported_accuracy",
+            "reported_score",
+            "reported_vendor_method",
+            "third_party_method"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "evaluation.leaderboard_public": {
+          "type": "boolean|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "automation_checks": {
+          "type": "object",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "manual_research_note",
+          "updated_by": "manual_review",
+          "storage_class": "research_note"
+        }
+      }
+    },
+    "source": {
+      "description": "A paper, dataset, leaderboard, repository, website, article, or blog URL used as evidence.",
+      "primary_json": "embedded in benchmark, dataset sample, leaderboard result, and provider appearance files",
+      "future_database_table": "sources",
+      "fields": {
+        "source_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "article",
+            "blog",
+            "code_repository",
+            "csv",
+            "dataset",
+            "github",
+            "github_dataset",
+            "huggingface_dataset",
+            "kaggle_dataset",
+            "leaderboard",
+            "official_benchmark",
+            "official_benchmark_github",
+            "official_benchmark_hf_space",
+            "paper",
+            "reported_scores",
+            "third_party",
+            "vendor_published",
+            "website"
+          ],
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "url": {
+          "type": "url",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_url",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "access_mode": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "public",
+            "public_or_token_required",
+            "token_required",
+            "restricted",
+            "unknown"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "last_checked_at": {
+          "type": "date",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        }
+      }
+    },
+    "dataset": {
+      "description": "Dataset metadata and access facts for a benchmark.",
+      "primary_json": "benchmark-research/dataset_samples_v1.json",
+      "future_database_table": "datasets",
+      "fields": {
+        "benchmark_id": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "status": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "sampled",
+            "encrypted_sampled",
+            "partial_sampled",
+            "viewer_unsupported",
+            "viewer_error",
+            "fetch_error",
+            "no_independent_dataset"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "source_url": {
+          "type": "url",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_url",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "source_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "article_or_blog",
+            "csv",
+            "github_dataset",
+            "huggingface_dataset",
+            "kaggle_dataset"
+          ],
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "record_count_observed": {
+          "type": "integer|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "fields": {
+          "type": "string[]",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "last_checked_at": {
+          "type": "date",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "notes": {
+          "type": "string|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "manual_research_note",
+          "updated_by": "manual_review",
+          "storage_class": "research_note"
+        },
+        "source_files": {
+          "type": "string[]",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "refresh_run",
+          "storage_class": "source_snapshot"
+        },
+        "file_format": {
+          "type": "string|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "split": {
+          "type": "string|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "rows": {
+          "type": "sample_task[]",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "refresh_run",
+          "storage_class": "source_snapshot"
+        }
+      }
+    },
+    "sample_task": {
+      "description": "A public example row from a dataset preview. Row payload fields remain source-native.",
+      "primary_json": "benchmark-research/dataset_samples_v1.json",
+      "future_database_table": "sample_tasks",
+      "fields": {
+        "row_idx": {
+          "type": "integer",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "sample_payload": {
+          "type": "object",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "refresh_run",
+          "storage_class": "source_snapshot"
+        },
+        "row_source_url": {
+          "type": "url|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "required_url",
+          "updated_by": "refresh_run",
+          "storage_class": "source_snapshot"
+        },
+        "truncated": {
+          "type": "boolean|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "refresh_run",
+          "storage_class": "source_snapshot"
+        }
+      }
+    },
+    "leaderboard_result": {
+      "description": "A public leaderboard or score snapshot from external sources.",
+      "primary_json": "benchmark-research/public_result_snapshots_v1.json",
+      "future_database_table": "leaderboard_results",
+      "fields": {
+        "id": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "benchmark_id": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "source_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "official_benchmark_github",
+            "official_benchmark_hf_space",
+            "reported_scores"
+          ],
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "source_url": {
+          "type": "url",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_url",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "metrics": {
+          "type": "string[]",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "derived_from_source",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        },
+        "rows": {
+          "type": "object[]",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "refresh_run",
+          "storage_class": "source_snapshot"
+        },
+        "tables": {
+          "type": "object[]",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "refresh_run",
+          "storage_class": "source_snapshot"
+        },
+        "last_checked_at": {
+          "type": "date",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        }
+      }
+    },
+    "provider_appearance": {
+      "description": "Where Tavily, Exa, Brave, or another tracked provider appears in public benchmark/evaluation contexts.",
+      "primary_json": "benchmark-research/competitor_visibility_v1.json",
+      "future_database_table": "provider_appearances",
+      "fields": {
+        "provider": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "Tavily",
+            "Exa",
+            "Brave"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "benchmark_id": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "benchmark_or_eval": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "appearance_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "compared_provider",
+            "fixed_search_provider",
+            "supported_provider_in_eval_framework",
+            "third_party_comparison",
+            "vendor_claim",
+            "vendor_comparison"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "source_independence": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "code_repository",
+            "official_benchmark",
+            "third_party",
+            "vendor_published"
+          ],
+          "source_requirement": "derived_from_source",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "source_url": {
+          "type": "url",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "required_url",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "database"
+        },
+        "score_or_metric": {
+          "type": "object|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "required_public_source",
+          "updated_by": "manual_or_refresh",
+          "storage_class": "source_snapshot"
+        },
+        "details": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "manual_research_note",
+          "updated_by": "manual_review",
+          "storage_class": "research_note"
+        },
+        "inclusion_status": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "included",
+            "excluded"
+          ],
+          "source_requirement": "manual_research_note",
+          "updated_by": "manual_review",
+          "storage_class": "database"
+        },
+        "last_checked_at": {
+          "type": "date",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "refresh_run",
+          "storage_class": "database"
+        }
+      }
+    },
+    "refresh_run": {
+      "description": "A manual or automated refresh/validation run over source data.",
+      "primary_json": "benchmark-research/refresh_runs_v1.json",
+      "future_database_table": "refresh_runs",
+      "fields": {
+        "id": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "database"
+        },
+        "run_type": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "manual_data_model_update",
+            "metadata_refresh",
+            "dataset_sample_refresh",
+            "leaderboard_sync",
+            "provider_visibility_sync",
+            "validation_only"
+          ],
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "database"
+        },
+        "status": {
+          "type": "enum",
+          "required": true,
+          "allowed_values": [
+            "completed",
+            "failed",
+            "blocked",
+            "requires_review"
+          ],
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "database"
+        },
+        "started_at": {
+          "type": "datetime",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "database"
+        },
+        "finished_at": {
+          "type": "datetime|null",
+          "required": false,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "database"
+        },
+        "input_files": {
+          "type": "string[]",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "source_snapshot"
+        },
+        "output_files": {
+          "type": "string[]",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "source_snapshot"
+        },
+        "summary": {
+          "type": "string",
+          "required": true,
+          "allowed_values": null,
+          "source_requirement": "system_generated",
+          "updated_by": "system",
+          "storage_class": "research_note"
+        }
+      }
+    }
+  }
+}

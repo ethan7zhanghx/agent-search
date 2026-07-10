@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "schema_version": "1.0.0",
+    "data_model_version": "1.0.0",
+    "generated_at": "2026-07-10",
+    "last_updated_at": "2026-07-10",
+    "entity_type": "refresh_run_registry",
+    "canonical_model": "benchmark-research/data_model_v1.json",
+    "language": "zh-CN",
+    "purpose": "Manual and automated data refresh, normalization, and validation run history."
+  },
+  "runs": [
+    {
+      "id": "manual_data_model_update_2026_07_10",
+      "run_type": "manual_data_model_update",
+      "status": "completed",
+      "started_at": "2026-07-10T15:24:20+08:00",
+      "finished_at": "2026-07-10T15:24:20+08:00",
+      "input_files": [
+        "benchmark-research/objective_benchmark_facts_v1.json",
+        "benchmark-research/excluded_benchmarks_v1.json",
+        "benchmark-research/dataset_samples_v1.json",
+        "benchmark-research/public_result_snapshots_v1.json",
+        "benchmark-research/competitor_visibility_v1.json"
+      ],
+      "output_files": [
+        "benchmark-research/data_model_v1.json",
+        "benchmark-research/objective_data_model_v1.md",
+        "benchmark-research/objective_benchmark_facts_v1.json",
+        "benchmark-research/excluded_benchmarks_v1.json",
+        "benchmark-research/dataset_samples_v1.json",
+        "benchmark-research/public_result_snapshots_v1.json",
+        "benchmark-research/competitor_visibility_v1.json",
+        "benchmark-research/refresh_runs_v1.json"
+      ],
+      "summary": "Established v1 data model contract, normalized JSON metadata, removed frontend-only provider appearance fields, and added validation coverage."
+    }
+  ]
+}
