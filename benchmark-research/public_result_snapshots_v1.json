@@ -1,9 +1,13 @@
 {
   "meta": {
-    "schema_version": "0.1.0",
+    "schema_version": "1.0.0",
     "generated_at": "2026-07-09",
-    "purpose": "Public benchmark / leaderboard result snapshots for frontend display. These are external/public results, not Querit internal API runs.",
-    "source_policy": "Each snapshot records whether it comes from an official benchmark source, a vendor-published comparison, or a third-party article."
+    "purpose": "Public benchmark and leaderboard result snapshots. These are external/public results, not Querit internal API runs.",
+    "source_policy": "Each snapshot records whether it comes from an official benchmark source, a vendor-published comparison, or a third-party article.",
+    "data_model_version": "1.0.0",
+    "last_updated_at": "2026-07-10",
+    "entity_type": "leaderboard_result_registry",
+    "canonical_model": "benchmark-research/data_model_v1.json"
   },
   "snapshots": [
     {
@@ -13,18 +17,95 @@
       "source_type": "official_benchmark_github",
       "source_url": "https://raw.githubusercontent.com/LiveNewsBench/LiveNewsBench/main/outputs/jan_2026_release_2/5_searches/all_results.txt",
       "result_date_or_release": "jan_2026_release_2",
-      "metrics": ["accuracy_pct", "searches_avg", "clicks_avg"],
+      "metrics": [
+        "accuracy_pct",
+        "searches_avg",
+        "clicks_avg"
+      ],
       "rows": [
-        {"model": "GPT 5.2 Official Web Search", "accuracy_pct": 90.0, "correct": 180, "total": 200, "searches_avg": 0.0, "clicks_avg": 0.0, "official_search_api": true},
-        {"model": "DeepSeek V3.2 Thinking", "accuracy_pct": 84.5, "correct": 169, "total": 200, "searches_avg": 3.29, "clicks_avg": 2.62, "official_search_api": false},
-        {"model": "DeepSeek V3.2", "accuracy_pct": 83.0, "correct": 166, "total": 200, "searches_avg": 3.36, "clicks_avg": 2.63, "official_search_api": false},
-        {"model": "Claude Sonnet 4.5", "accuracy_pct": 82.0, "correct": 164, "total": 200, "searches_avg": 2.88, "clicks_avg": 1.27, "official_search_api": false},
-        {"model": "Grok 4", "accuracy_pct": 82.0, "correct": 164, "total": 200, "searches_avg": 2.73, "clicks_avg": 1.7, "official_search_api": false},
-        {"model": "GPT 5.2", "accuracy_pct": 74.0, "correct": 148, "total": 200, "searches_avg": 2.85, "clicks_avg": 1.83, "official_search_api": false},
-        {"model": "GPT 4.1", "accuracy_pct": 72.5, "correct": 145, "total": 200, "searches_avg": 1.65, "clicks_avg": 0.6, "official_search_api": false},
-        {"model": "Kimi K2.5", "accuracy_pct": 70.5, "correct": 141, "total": 200, "searches_avg": 3.21, "clicks_avg": 1.18, "official_search_api": false},
-        {"model": "Anthropic Sonnet 4.5 Official Search", "accuracy_pct": 40.0, "correct": 80, "total": 200, "searches_avg": 0.0, "clicks_avg": 0.0, "official_search_api": true}
-      ]
+        {
+          "model": "GPT 5.2 Official Web Search",
+          "accuracy_pct": 90,
+          "correct": 180,
+          "total": 200,
+          "searches_avg": 0,
+          "clicks_avg": 0,
+          "official_search_api": true
+        },
+        {
+          "model": "DeepSeek V3.2 Thinking",
+          "accuracy_pct": 84.5,
+          "correct": 169,
+          "total": 200,
+          "searches_avg": 3.29,
+          "clicks_avg": 2.62,
+          "official_search_api": false
+        },
+        {
+          "model": "DeepSeek V3.2",
+          "accuracy_pct": 83,
+          "correct": 166,
+          "total": 200,
+          "searches_avg": 3.36,
+          "clicks_avg": 2.63,
+          "official_search_api": false
+        },
+        {
+          "model": "Claude Sonnet 4.5",
+          "accuracy_pct": 82,
+          "correct": 164,
+          "total": 200,
+          "searches_avg": 2.88,
+          "clicks_avg": 1.27,
+          "official_search_api": false
+        },
+        {
+          "model": "Grok 4",
+          "accuracy_pct": 82,
+          "correct": 164,
+          "total": 200,
+          "searches_avg": 2.73,
+          "clicks_avg": 1.7,
+          "official_search_api": false
+        },
+        {
+          "model": "GPT 5.2",
+          "accuracy_pct": 74,
+          "correct": 148,
+          "total": 200,
+          "searches_avg": 2.85,
+          "clicks_avg": 1.83,
+          "official_search_api": false
+        },
+        {
+          "model": "GPT 4.1",
+          "accuracy_pct": 72.5,
+          "correct": 145,
+          "total": 200,
+          "searches_avg": 1.65,
+          "clicks_avg": 0.6,
+          "official_search_api": false
+        },
+        {
+          "model": "Kimi K2.5",
+          "accuracy_pct": 70.5,
+          "correct": 141,
+          "total": 200,
+          "searches_avg": 3.21,
+          "clicks_avg": 1.18,
+          "official_search_api": false
+        },
+        {
+          "model": "Anthropic Sonnet 4.5 Official Search",
+          "accuracy_pct": 40,
+          "correct": 80,
+          "total": 200,
+          "searches_avg": 0,
+          "clicks_avg": 0,
+          "official_search_api": true
+        }
+      ],
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "browsecomp_plus_leaderboard_2026_07_09",
@@ -33,18 +114,96 @@
       "source_type": "official_benchmark_hf_space",
       "source_url": "https://tevatron-browsecomp-plus.hf.space/data/leaderboard.json",
       "fetched_at": "2026-07-09",
-      "metrics": ["accuracy_pct", "recall_pct", "search_calls", "calibration_error_pct"],
-      "rows": [
-        {"llm": "GPT-5", "retriever": "Hybrid Qwen2-7B + Reason-ModernColBERT", "accuracy_pct": 95.18, "recall_pct": 93.17, "search_calls": 209.27, "calibration_error_pct": 2.35, "evaluation_date": "April 28, 2026", "submitted_by": "AI21"},
-        {"llm": "GLM-5.1-FP8", "retriever": "Hybrid BM25 + Qwen3-Embed-8B", "accuracy_pct": 90.72, "recall_pct": 84.31, "search_calls": 12.53, "calibration_error_pct": 7.23, "evaluation_date": "April 17, 2026", "submitted_by": "Sail Research"},
-        {"llm": "GPT-5", "retriever": "Mixedbread Search (v3)", "accuracy_pct": 90.48, "recall_pct": 83.03, "search_calls": 11.53, "calibration_error_pct": 3.14, "evaluation_date": "Mar 19, 2026", "submitted_by": "Mixedbread"},
-        {"llm": "GPT-5", "retriever": "Reason-ModernColBERT", "accuracy_pct": 87.59, "recall_pct": 81.55, "search_calls": 13.27, "calibration_error_pct": 6.07, "evaluation_date": "Mar 16, 2026", "submitted_by": "LightOn"},
-        {"llm": "GPT-5", "retriever": "Iso-ModernColBERT", "accuracy_pct": 80.48, "recall_pct": 77.82, "search_calls": 14.1, "calibration_error_pct": 5.51, "evaluation_date": "June 11, 2026", "submitted_by": "TopK"},
-        {"llm": "GPT-5-mini", "retriever": "openJiuwen-deepsearch", "accuracy_pct": 80.0, "recall_pct": 54.51, "search_calls": 6.05, "calibration_error_pct": 18.82, "evaluation_date": "Nov 26, 2025", "submitted_by": "openJiuwen"},
-        {"llm": "GPT-5", "retriever": "Mixedbread Search", "accuracy_pct": 78.41, "recall_pct": 48.85, "search_calls": 44.67, "calibration_error_pct": 7.92, "evaluation_date": "Dec 11, 2025", "submitted_by": "Agentica"},
-        {"llm": "GPT-5", "retriever": "Qwen3-Embed-8B", "accuracy_pct": 71.69, "recall_pct": 78.98, "search_calls": 21.74, "calibration_error_pct": 9.58, "evaluation_date": "Aug 8, 2025", "submitted_by": "BrowseComp-Plus"}
+      "metrics": [
+        "accuracy_pct",
+        "recall_pct",
+        "search_calls",
+        "calibration_error_pct"
       ],
-      "notes": "Full source contained 82 rows when checked. This file stores a frontend seed subset; the app can later fetch the JSON directly."
+      "rows": [
+        {
+          "llm": "GPT-5",
+          "retriever": "Hybrid Qwen2-7B + Reason-ModernColBERT",
+          "accuracy_pct": 95.18,
+          "recall_pct": 93.17,
+          "search_calls": 209.27,
+          "calibration_error_pct": 2.35,
+          "evaluation_date": "April 28, 2026",
+          "submitted_by": "AI21"
+        },
+        {
+          "llm": "GLM-5.1-FP8",
+          "retriever": "Hybrid BM25 + Qwen3-Embed-8B",
+          "accuracy_pct": 90.72,
+          "recall_pct": 84.31,
+          "search_calls": 12.53,
+          "calibration_error_pct": 7.23,
+          "evaluation_date": "April 17, 2026",
+          "submitted_by": "Sail Research"
+        },
+        {
+          "llm": "GPT-5",
+          "retriever": "Mixedbread Search (v3)",
+          "accuracy_pct": 90.48,
+          "recall_pct": 83.03,
+          "search_calls": 11.53,
+          "calibration_error_pct": 3.14,
+          "evaluation_date": "Mar 19, 2026",
+          "submitted_by": "Mixedbread"
+        },
+        {
+          "llm": "GPT-5",
+          "retriever": "Reason-ModernColBERT",
+          "accuracy_pct": 87.59,
+          "recall_pct": 81.55,
+          "search_calls": 13.27,
+          "calibration_error_pct": 6.07,
+          "evaluation_date": "Mar 16, 2026",
+          "submitted_by": "LightOn"
+        },
+        {
+          "llm": "GPT-5",
+          "retriever": "Iso-ModernColBERT",
+          "accuracy_pct": 80.48,
+          "recall_pct": 77.82,
+          "search_calls": 14.1,
+          "calibration_error_pct": 5.51,
+          "evaluation_date": "June 11, 2026",
+          "submitted_by": "TopK"
+        },
+        {
+          "llm": "GPT-5-mini",
+          "retriever": "openJiuwen-deepsearch",
+          "accuracy_pct": 80,
+          "recall_pct": 54.51,
+          "search_calls": 6.05,
+          "calibration_error_pct": 18.82,
+          "evaluation_date": "Nov 26, 2025",
+          "submitted_by": "openJiuwen"
+        },
+        {
+          "llm": "GPT-5",
+          "retriever": "Mixedbread Search",
+          "accuracy_pct": 78.41,
+          "recall_pct": 48.85,
+          "search_calls": 44.67,
+          "calibration_error_pct": 7.92,
+          "evaluation_date": "Dec 11, 2025",
+          "submitted_by": "Agentica"
+        },
+        {
+          "llm": "GPT-5",
+          "retriever": "Qwen3-Embed-8B",
+          "accuracy_pct": 71.69,
+          "recall_pct": 78.98,
+          "search_calls": 21.74,
+          "calibration_error_pct": 9.58,
+          "evaluation_date": "Aug 8, 2025",
+          "submitted_by": "BrowseComp-Plus"
+        }
+      ],
+      "notes": "Full source contained 82 rows when checked. This file stores a frontend seed subset; the app can later fetch the JSON directly.",
+      "last_checked_at": "2026-07-09"
     },
     {
       "id": "agentsearchbench_readme_leaderboard_2026_07_09",
@@ -56,32 +215,103 @@
       "tables": [
         {
           "name": "Task Description Reranking",
-          "metrics": ["ndcg_at_5", "ndcg_at_20", "completeness_at_5"],
+          "metrics": [
+            "ndcg_at_5",
+            "ndcg_at_20",
+            "completeness_at_5"
+          ],
           "rows": [
-            {"rank": 1, "model": "RankGPT GPT-5.2", "ndcg_at_5": 64.66, "ndcg_at_20": 84.69, "completeness_at_5": 0.0},
-            {"rank": 2, "model": "Qwen Reranker 4B", "ndcg_at_5": 60.58, "ndcg_at_20": 82.84, "completeness_at_5": 0.0},
-            {"rank": 3, "model": "Tool-Rank 8B", "ndcg_at_5": 61.97, "ndcg_at_20": 82.76, "completeness_at_5": 0.96}
+            {
+              "rank": 1,
+              "model": "RankGPT GPT-5.2",
+              "ndcg_at_5": 64.66,
+              "ndcg_at_20": 84.69,
+              "completeness_at_5": 0
+            },
+            {
+              "rank": 2,
+              "model": "Qwen Reranker 4B",
+              "ndcg_at_5": 60.58,
+              "ndcg_at_20": 82.84,
+              "completeness_at_5": 0
+            },
+            {
+              "rank": 3,
+              "model": "Tool-Rank 8B",
+              "ndcg_at_5": 61.97,
+              "ndcg_at_20": 82.76,
+              "completeness_at_5": 0.96
+            }
           ]
         },
         {
           "name": "Task Query Reranking",
-          "metrics": ["ndcg_at_5", "ndcg_at_20", "completeness_at_5"],
+          "metrics": [
+            "ndcg_at_5",
+            "ndcg_at_20",
+            "completeness_at_5"
+          ],
           "rows": [
-            {"rank": 1, "model": "Qwen Reranker 4B", "ndcg_at_5": 64.53, "ndcg_at_20": 81.97, "completeness_at_5": 62.50},
-            {"rank": 2, "model": "Tool-Rank 8B", "ndcg_at_5": 64.36, "ndcg_at_20": 81.96, "completeness_at_5": 60.00},
-            {"rank": 3, "model": "RankGPT GPT-5.2", "ndcg_at_5": 64.57, "ndcg_at_20": 81.88, "completeness_at_5": 56.50}
+            {
+              "rank": 1,
+              "model": "Qwen Reranker 4B",
+              "ndcg_at_5": 64.53,
+              "ndcg_at_20": 81.97,
+              "completeness_at_5": 62.5
+            },
+            {
+              "rank": 2,
+              "model": "Tool-Rank 8B",
+              "ndcg_at_5": 64.36,
+              "ndcg_at_20": 81.96,
+              "completeness_at_5": 60
+            },
+            {
+              "rank": 3,
+              "model": "RankGPT GPT-5.2",
+              "ndcg_at_5": 64.57,
+              "ndcg_at_20": 81.88,
+              "completeness_at_5": 56.5
+            }
           ]
         },
         {
           "name": "Task Query Retrieval",
-          "metrics": ["ndcg_at_20", "precision_at_20", "recall_at_20", "completeness_at_20"],
+          "metrics": [
+            "ndcg_at_20",
+            "precision_at_20",
+            "recall_at_20",
+            "completeness_at_20"
+          ],
           "rows": [
-            {"rank": 1, "model": "ToolRet", "ndcg_at_20": 28.87, "precision_at_20": 19.36, "recall_at_20": 27.80, "completeness_at_20": 57.53},
-            {"rank": 2, "model": "BGE-Large v1.5", "ndcg_at_20": 26.14, "precision_at_20": 17.64, "recall_at_20": 25.49, "completeness_at_20": 52.52},
-            {"rank": 3, "model": "Tool-Embed", "ndcg_at_20": 25.67, "precision_at_20": 17.23, "recall_at_20": 24.46, "completeness_at_20": 53.91}
+            {
+              "rank": 1,
+              "model": "ToolRet",
+              "ndcg_at_20": 28.87,
+              "precision_at_20": 19.36,
+              "recall_at_20": 27.8,
+              "completeness_at_20": 57.53
+            },
+            {
+              "rank": 2,
+              "model": "BGE-Large v1.5",
+              "ndcg_at_20": 26.14,
+              "precision_at_20": 17.64,
+              "recall_at_20": 25.49,
+              "completeness_at_20": 52.52
+            },
+            {
+              "rank": 3,
+              "model": "Tool-Embed",
+              "ndcg_at_20": 25.67,
+              "precision_at_20": 17.23,
+              "recall_at_20": 24.46,
+              "completeness_at_20": 53.91
+            }
           ]
         }
-      ]
+      ],
+      "last_checked_at": "2026-07-09"
     }
   ]
 }

@@ -1,14 +1,18 @@
 {
   "meta": {
-    "schema_version": "0.1.0",
+    "schema_version": "1.0.0",
     "generated_at": "2026-07-10",
     "language": "zh-CN",
-    "purpose": "Records reviewed but excluded from the main Agent Search benchmark registry.",
+    "purpose": "Reviewed benchmark/evaluation records excluded from the main Agent Search benchmark registry.",
     "exclusion_reason_values": [
       "provided_context_only",
       "no_search_dependency",
       "out_of_scope"
-    ]
+    ],
+    "data_model_version": "1.0.0",
+    "last_updated_at": "2026-07-10",
+    "entity_type": "excluded_benchmark_registry",
+    "canonical_model": "benchmark-research/data_model_v1.json"
   },
   "benchmarks": [
     {
@@ -20,17 +24,20 @@
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2506.05334v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         },
         {
           "source_type": "github",
           "url": "https://github.com/lmarena/search-arena",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         },
         {
           "source_type": "dataset",
           "url": "https://huggingface.co/datasets/lmarena-ai/search-arena-24k",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         }
       ],
       "dataset_facts": {
@@ -93,7 +100,9 @@
       "inclusion_status": "excluded",
       "excluded_at": "2026-07-10",
       "exclusion_reason": "provided_context_only",
-      "exclusion_notes": "Public record is a trace/preference dataset for search-augmented LLM behavior; search API quality is not the system under test and search is not required during evaluation."
+      "exclusion_notes": "Public record is a trace/preference dataset for search-augmented LLM behavior; search API quality is not the system under test and search is not required during evaluation.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-10"
     },
     {
       "id": "simpleqa",
@@ -105,27 +114,32 @@
         {
           "source_type": "website",
           "url": "https://openai.com/index/introducing-simpleqa/",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         },
         {
           "source_type": "paper",
           "url": "https://arxiv.org/html/2411.04368v1",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         },
         {
           "source_type": "github",
           "url": "https://github.com/openai/simple-evals/blob/main/simpleqa_eval.py",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         },
         {
           "source_type": "dataset",
           "url": "https://openaipublic.blob.core.windows.net/simple-evals/simple_qa_test_set.csv",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         },
         {
           "source_type": "leaderboard",
           "url": "https://www.kaggle.com/benchmarks/openai/simpleqa/leaderboard",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         }
       ],
       "dataset_facts": {
@@ -196,7 +210,9 @@
       "inclusion_status": "excluded",
       "excluded_at": "2026-07-10",
       "exclusion_reason": "no_search_dependency",
-      "exclusion_notes": "SimpleQA is a static factual QA benchmark. Search APIs may be used by vendor evaluations built on top of it, but the benchmark itself does not require or evaluate search."
+      "exclusion_notes": "SimpleQA is a static factual QA benchmark. Search APIs may be used by vendor evaluations built on top of it, but the benchmark itself does not require or evaluate search.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-10"
     },
     {
       "id": "parallel_comparison_article",
@@ -208,7 +224,8 @@
         {
           "source_type": "article",
           "url": "https://parallel.ai/articles/openai-web-search-vs-parallel-vs-exa-vs-tavily-how-to-choose",
-          "access_mode": "public"
+          "access_mode": "public",
+          "last_checked_at": "2026-07-10"
         }
       ],
       "dataset_facts": {
@@ -270,7 +287,9 @@
       "inclusion_status": "excluded",
       "excluded_at": "2026-07-10",
       "exclusion_reason": "out_of_scope",
-      "exclusion_notes": "This is a vendor comparison article with benchmark claims, not a standalone benchmark or evaluation dataset."
+      "exclusion_notes": "This is a vendor comparison article with benchmark claims, not a standalone benchmark or evaluation dataset.",
+      "updated_at": "2026-07-10",
+      "last_checked_at": "2026-07-10"
     }
   ]
 }

@@ -4,6 +4,7 @@ import io
 import json
 import time
 import zipfile
+from datetime import date
 from pathlib import Path
 
 import fsspec
@@ -17,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "dataset_samples_v1.json"
 
 UA = "agent-search-benchmark-dataset-refresh/0.1"
+MODEL_VERSION = "1.0.0"
 
 
 def get(url, *, params=None, timeout=30, retries=2):
@@ -180,6 +182,38 @@ def no_independent_dataset(source_url, note):
         "rows": [],
         "notes": note,
     }
+
+
+def normalize_dataset_entry(dataset_id, entry, checked_at):
+    entry = {
+        "benchmark_id": dataset_id,
+        **entry,
+        "last_checked_at": entry.get("last_checked_at") or checked_at,
+    }
+    if not entry.get("sample_type"):
+        entry["sample_type"] = "dataset_rows" if entry.get("rows") else "metadata_only"
+    return entry
+
+
+FALLBACK_SOURCES = {
+    "facts_search": ("https://www.kaggle.com/datasets/deepmind/facts-search-public", "kaggle_dataset"),
+    "browsecomp": ("https://openaipublic.blob.core.windows.net/simple-evals/browse_comp_test_set.csv", "csv"),
+    "tavily_search_evals": ("https://github.com/tavily-ai/tavily-search-evals", "github_dataset"),
+    "simpleqa": ("https://openaipublic.blob.core.windows.net/simple-evals/simple_qa_test_set.csv", "csv"),
+    "exa_api_evals": ("https://exa.ai/blog/api-evals", "article_or_blog"),
+    "brave_simpleqa_comparison": ("https://brave.com/blog/ai-grounding/", "article_or_blog"),
+    "aimultiple_agentic_search_benchmark": ("https://aimultiple.com/agentic-search", "article_or_blog"),
+    "wiser_search": ("https://parallel.ai/blog/search-api-benchmark", "article_or_blog"),
+    "parallel_comparison_article": ("https://parallel.ai/articles/openai-web-search-vs-parallel-vs-exa-vs-tavily-how-to-choose", "article_or_blog"),
+    "livenewsbench": ("https://github.com/LiveNewsBench/LiveNewsBench", "github_dataset"),
+    "browsecomp_plus": ("https://huggingface.co/datasets/Tevatron/browsecomp-plus", "huggingface_dataset"),
+    "widesearch": ("https://huggingface.co/datasets/ByteDance-Seed/WideSearch", "huggingface_dataset"),
+    "deepsearchqa": ("https://huggingface.co/datasets/google/deepsearchqa", "huggingface_dataset"),
+    "sgr_bench": ("https://huggingface.co/datasets/PKUAIWeb/SGR-BENCH", "huggingface_dataset"),
+    "agentsearchbench": ("https://huggingface.co/datasets/AgentSearch/AgentSearchBench-Tasks", "huggingface_dataset"),
+    "miracl": ("https://huggingface.co/datasets/miracl/miracl", "huggingface_dataset"),
+    "search_arena": ("https://huggingface.co/datasets/lmarena-ai/search-arena-24k", "huggingface_dataset"),
+}
 
 
 def livenewsbench():
@@ -431,6 +465,7 @@ def search_arena():
 
 
 def build():
+    today = date.today().isoformat()
     datasets = {
         "facts_search": kaggle_facts_search,
         "browsecomp": browsecomp,
@@ -467,9 +502,13 @@ def build():
     }
     output = {
         "meta": {
-            "schema_version": "0.2.0",
-            "generated_at": "2026-07-09",
-            "purpose": "Frontend dataset previews from public source artifacts. Rows are fetched from official CSV, JSONL, TSV, or parquet sources; long cells are truncated and marked.",
+            "schema_version": MODEL_VERSION,
+            "data_model_version": MODEL_VERSION,
+            "generated_at": today,
+            "last_updated_at": today,
+            "entity_type": "dataset_sample_registry",
+            "canonical_model": "benchmark-research/data_model_v1.json",
+            "purpose": "Dataset metadata and public sample task previews from source artifacts.",
             "sampling_policy": "Small first-row previews only. Public encrypted rows remain encrypted; large nested columns are summarized by fields and scalar samples.",
         },
         "datasets": {},
@@ -477,16 +516,19 @@ def build():
     for dataset_id, loader in datasets.items():
         print(f"refreshing {dataset_id}...", flush=True)
         try:
-            output["datasets"][dataset_id] = loader()
+            output["datasets"][dataset_id] = normalize_dataset_entry(dataset_id, loader(), today)
             print(f"done {dataset_id}", flush=True)
         except Exception as exc:
             print(f"failed {dataset_id}: {type(exc).__name__}: {exc}", flush=True)
-            output["datasets"][dataset_id] = {
+            source_url, source_type = FALLBACK_SOURCES[dataset_id]
+            output["datasets"][dataset_id] = normalize_dataset_entry(dataset_id, {
                 "status": "fetch_error",
+                "source_url": source_url,
+                "source_type": source_type,
                 "fields": [],
                 "rows": [],
                 "notes": f"{type(exc).__name__}: {exc}",
-            }
+            }, today)
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 

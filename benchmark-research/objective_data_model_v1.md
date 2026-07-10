@@ -1,298 +1,115 @@
-# Benchmark 前端与数据库客观数据模型 v1
+# Agent Search Benchmark 数据模型 v1
 
-生成日期：2026-07-09
+更新日期：2026-07-10
 
-## 1. 设计原则
+本文件是团队阅读版说明；机器可读字段契约见 `benchmark-research/data_model_v1.json`。后续前端、数据库迁移、自动刷新脚本和 PR 校验都应以该 JSON 为准。
 
-后续前端和数据库应尽量作为事实库，而不是观点库。核心表只记录可追溯事实：
+## 1. v1 覆盖范围
 
-- benchmark 官方名称、来源、论文、代码、数据集、license。
-- benchmark 是否进入主库，以及它评估的是 `search_api` 还是 `agent_plus_search`。
-- 数据集 split、文件路径、字段、样本数量、语言、更新时间。
-- 任务输入/输出格式、gold 类型、是否包含 qrels、是否包含 hidden test。
-- search / retrieval / browsing / agent pool 在评估协议中的位置。
-- 官方指标、judge 类型、评估脚本、leaderboard 提交方式。
-- 自动化抓取状态、credentials 需求、最近一次检查结果。
+v1 明确覆盖七类实体：
 
-以下内容不要放进核心事实表，最多放到 annotation 层：
+| 实体 | 当前 JSON 位置 | 后续数据库表 | 说明 |
+|---|---|---|---|
+| `benchmark` | `objective_benchmark_facts_v1.json` | `benchmarks` | 主库 benchmark / evaluation 条目 |
+| `dataset` | `dataset_samples_v1.json` | `datasets` | dataset 元信息、来源、记录数、字段 |
+| `sample_task` | `dataset_samples_v1.json` 的 `rows` | `sample_tasks` | 公开样例任务或样例行；原始字段保持 source-native |
+| `source` | 嵌入各 JSON 的 source URL | `sources` | 论文、GitHub、dataset、leaderboard、博客等证据来源 |
+| `leaderboard_result` | `public_result_snapshots_v1.json` | `leaderboard_results` | 官方或公开 score / leaderboard 快照 |
+| `provider_appearance` | `competitor_visibility_v1.json` | `provider_appearances` | Tavily / Exa / Brave 在公开 evaluation 中出现的记录 |
+| `refresh_run` | `refresh_runs_v1.json` | `refresh_runs` | 手工或自动刷新、校验、同步运行记录 |
 
-- “优先级高/低”
-- “很适合我们”
-- “推荐先做”
-- “价值很大”
-- “效果好/不好”
+## 2. 主库收录规则
 
-如果确实需要展示判断，建议做成独立表 `annotations`，并保存作者、时间、依据和适用场景。
-
-## 1.1 主库收录规则
-
-主库只收两类 benchmark：
+`objective_benchmark_facts_v1.json` 只保留两类：
 
 | `evaluation_target` | 含义 | 收录条件 |
 |---|---|---|
 | `search_api` | Search API、search engine、retriever 或 provider 本身是被测对象 | 搜索结果质量、排序、召回、相关性、覆盖度、延迟或 provider score 会直接影响评分 |
 | `agent_plus_search` | Agent / LLM 使用 search 作为工具完成任务 | Search 工具调用、搜索结果质量或搜索策略会真实影响最终任务评分 |
 
-以下类型不进入主库，放入 `excluded_benchmarks_v1.json`：
+不进入主库的条目放入 `excluded_benchmarks_v1.json`：
 
 | `exclusion_reason` | 含义 |
 |---|---|
-| `provided_context_only` | benchmark 提供了搜索后的材料、trace 或 evidence，评估时不需要 search API 参与 |
-| `no_search_dependency` | benchmark 本身是静态 QA / 阅读理解 / 模型能力评估，search 不是协议要求 |
+| `provided_context_only` | benchmark 已提供搜索后的材料、trace 或 evidence，评估时不需要 search API 参与 |
+| `no_search_dependency` | 静态 QA、阅读理解或模型能力评估，search 不是协议要求 |
 | `out_of_scope` | 文章、观点、产品对比或无法形成独立 benchmark/evaluation 条目的材料 |
 
-主库判断原则：
+## 3. 字段要求
 
-> 只有 search 结果质量、search API 行为，或 agent 对 search 工具的使用会实质影响最终评分的 benchmark，才进入主库。
+每个字段必须在 `data_model_v1.json` 中定义以下信息：
 
-## 2. 核心实体
+| 属性 | 含义 |
+|---|---|
+| `type` | 字段类型，例如 `string`、`enum`、`url`、`date`、`object[]` |
+| `required` | 当前 v1 数据是否必填 |
+| `allowed_values` | enum 的允许值；非 enum 为 `null` |
+| `source_requirement` | 来源要求：URL、公开来源、从来源派生、人工调研备注或系统生成 |
+| `updated_by` | 更新时间由人工、刷新脚本、校验脚本或系统生成 |
+| `storage_class` | 后续存储位置：数据库、来源快照或调研备注 |
 
-### 2.1 `benchmarks`
+所有 v1 数据文件都应有：
 
-一条 benchmark 的稳定身份。
+| 字段 | 要求 |
+|---|---|
+| `schema_version` | 固定为 `1.0.0` |
+| `data_model_version` | 固定为 `1.0.0` |
+| `generated_at` | 生成或最初录入日期 |
+| `last_updated_at` | 本文件最近一次结构或事实更新日期 |
 
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | 内部稳定 ID |
-| `canonical_name` | text | 官方或最常用名称 |
-| `short_name` | text | 简称 |
-| `description` | text | 客观简介，避免评价性词汇 |
-| `inclusion_status` | enum | `included`, `excluded`, `pending_review` |
-| `evaluation_target` | enum/null | `search_api`, `agent_plus_search`；仅主库 included 条目必填 |
-| `search_component_role` | enum/null | `primary_system_under_test`, `tool_dependency`, `fixed_protocol_dependency` |
-| `evaluation_target_rationale` | text/null | 该分类的客观依据 |
-| `exclusion_reason` | enum/null | excluded 条目的排除原因 |
-| `benchmark_family` | enum/text | 如 `live_web_search`, `fixed_corpus_retrieval`, `agent_discovery` |
-| `first_released_year` | integer/null | 首次发布年份 |
-| `maintainer_org` | text/null | 维护方 |
-| `status` | enum | `active`, `archived`, `unknown` |
-| `created_at` | datetime | 入库时间 |
-| `updated_at` | datetime | 最近更新 |
+## 4. 数据库存储边界
 
-### 2.2 `benchmark_sources`
+应迁移到数据库的字段：
 
-所有可追踪来源。一个 benchmark 可有多个 source。
+- 稳定身份：`id`、`canonical_name`、`benchmark_id`、`provider`。
+- 分类与筛选：`evaluation_target`、`search_component_role`、`benchmark_family`、`source_type`、`source_independence`、`appearance_type`。
+- 客观协议：`task_design`、`search_protocol`、`evaluation`、`metrics`。
+- dataset metadata：`status`、`record_count_observed`、`fields`、`file_format`、`split`、`source_url`。
+- leaderboard metadata：`benchmark_id`、`metrics`、`source_url`、`source_type`、`result_date_or_release`。
+- 自动化字段：`last_checked_at`、`updated_at`、refresh run 的 `started_at`、`finished_at`、`status`。
 
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | source ID |
-| `benchmark_id` | text | 外键 |
-| `source_type` | enum | `paper`, `github`, `dataset`, `leaderboard`, `website`, `blog`, `docs` |
-| `url` | text | 来源 URL |
-| `title` | text/null | 来源标题 |
-| `host` | text/null | `github`, `huggingface`, `kaggle`, `arxiv`, `nist` 等 |
-| `access_mode` | enum | `public`, `token_required`, `unknown`, `restricted` |
-| `license_text` | text/null | 来源声明的 license |
-| `last_checked_at` | datetime/null | 最近检查时间 |
-| `content_hash` | text/null | 页面/文件 hash |
-| `check_status` | enum | `ok`, `failed`, `changed`, `requires_review` |
+保留为来源快照的字段：
 
-### 2.3 `benchmark_versions`
+- dataset sample row 的 source-native payload，例如 `problem`、`answer`、`query`、`metadata`、`rubric`。
+- leaderboard 原始行，例如模型名、retriever、公开 score、rank、correct / total。
+- provider appearance 的 `score_or_metric` 原始结构，尤其是厂商页面只给出文本型 score 时。
+- source 文件列表、split count、文件大小、row group 信息等可由刷新脚本重新生成的抓取结果。
 
-论文版本、数据 release、leaderboard 版本都应能单独记录。
+保留为调研备注的字段：
 
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | version ID |
-| `benchmark_id` | text | 外键 |
-| `version_type` | enum | `paper`, `dataset_release`, `leaderboard_snapshot`, `code_commit` |
-| `version_label` | text | 如 `jan_2026_release_2`, `v1.0`, `arXiv v1` |
-| `release_date` | date/null | 发布日期 |
-| `source_id` | text/null | 对应 source |
-| `source_ref` | text/null | commit hash、arXiv id、HF revision 等 |
-| `notes` | text/null | 客观说明 |
+- `evaluation_target_rationale`
+- `details`
+- `notes`
+- `exclusion_notes`
+- refresh run 的 `summary`
 
-### 2.4 `datasets`
+调研备注可以进入数据库，但不应和核心事实字段混在同一语义层。前端展示时也应区分“公开事实”和“调研说明”。
 
-数据集层级的 metadata。
+## 5. 展示层字段规则
 
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | dataset ID |
-| `benchmark_id` | text | 外键 |
-| `version_id` | text/null | 对应 release |
-| `host` | text | `huggingface`, `github`, `kaggle`, `openai_blob`, `nist`, `other` |
-| `dataset_name` | text | 数据集名称或路径 |
-| `download_url` | text/null | 可下载入口 |
-| `access_mode` | enum | `public`, `token_required`, `unknown`, `restricted` |
-| `license_text` | text/null | license |
-| `total_records` | integer/null | 总记录数 |
-| `record_count_basis` | enum | `official_claim`, `computed`, `sampled`, `unknown` |
-| `contains_hidden_test` | boolean/null | 是否存在隐藏测试集 |
-| `contains_public_labels` | boolean/null | labels 是否公开 |
-| `contains_qrels` | boolean/null | 是否包含 qrels |
-| `contains_traces` | boolean/null | 是否包含 search/agent traces |
+数据文件不保存前端专用字段，例如：
 
-### 2.5 `dataset_splits`
+- `frontend_display_group`
+- `frontend_notes`
+- 只为当前页面排版服务的 label、颜色、排序文案
 
-split 是前端和自动化最常用的筛选维度。
+如果页面需要分组，应由客观字段派生，例如用 `source_independence`、`appearance_type`、`provider` 或 `benchmark_id` 计算。
 
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | split ID |
-| `dataset_id` | text | 外键 |
-| `split_name` | text | `train`, `validation`, `test`, `human_verified_test` 等 |
-| `record_count` | integer/null | 记录数 |
-| `record_count_basis` | enum | `computed`, `official_claim`, `unknown` |
-| `file_path` | text/null | 文件路径 |
-| `file_format` | enum | `jsonl`, `csv`, `parquet`, `tsv`, `json`, `other` |
-| `file_size_bytes` | integer/null | 文件大小 |
-| `schema_json` | json/null | 字段 schema |
+## 6. 校验入口
 
-### 2.6 `task_designs`
+运行：
 
-任务设计只记录客观结构。
+```bash
+node benchmark-research/scripts/validate_data.mjs
+```
 
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | task design ID |
-| `benchmark_id` | text | 外键 |
-| `task_input_type` | enum | `question`, `query`, `instruction`, `task_description`, `website_state_task` |
-| `expected_output_type` | enum | `short_answer`, `set_answer`, `table`, `ranked_list`, `report`, `preference_pair` |
-| `gold_type` | enum | `answer_key`, `qrels`, `structured_table`, `human_vote`, `execution_grounded_label`, `judge_rubric` |
-| `requires_fresh_information` | boolean/null | 是否要求新鲜信息 |
-| `requires_multihop` | boolean/null | 是否多跳 |
-| `requires_exhaustive_collection` | boolean/null | 是否要求找全 |
-| `requires_structured_output` | boolean/null | 是否结构化输出 |
-| `languages` | json | 语言列表 |
+校验覆盖：
 
-### 2.7 `search_protocols`
+- `objective_benchmark_facts_v1.json` 字段完整性与主库收录规则。
+- `dataset_samples_v1.json` dataset 和 sample task 结构。
+- `public_result_snapshots_v1.json` leaderboard 结果结构。
+- `competitor_visibility_v1.json` provider appearance 结构。
+- `refresh_runs_v1.json` refresh run 结构。
+- 跨文件外键关系和 URL 格式。
 
-这是区分“真 search benchmark”和“只是 RAG/QA/阅读理解”的关键表。
-
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | protocol ID |
-| `benchmark_id` | text | 外键 |
-| `mode` | enum | `live_web`, `fixed_corpus`, `browser_navigation`, `state_gated_site`, `agent_pool`, `trace_dataset`, `search_api_eval_framework`, `vendor_comparison`, `third_party_report` |
-| `search_required_for_evaluation` | boolean | 评估时 search 是否参与 |
-| `search_provider_policy` | enum | `fixed_provider`, `user_provided`, `not_applicable`, `unknown` |
-| `fixed_provider_name` | text/null | 如 Brave、Tavily |
-| `retriever_replaceable` | boolean/null | 协议是否允许替换 retriever |
-| `tool_schema_public` | boolean/null | 工具 schema 是否公开 |
-| `records_tool_calls` | boolean/null | 是否记录 tool calls |
-| `records_search_count` | boolean/null | 是否记录搜索次数 |
-| `records_click_count` | boolean/null | 是否记录点击次数 |
-| `requires_click_or_full_page` | boolean/null | 是否需要点击/全文访问 |
-| `requires_site_state` | boolean/null | 是否需要站内筛选/视图/状态 |
-
-### 2.8 `evaluation_methods`
-
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | method ID |
-| `benchmark_id` | text | 外键 |
-| `supports_retrieval_only` | boolean | 是否支持只评估 retrieval |
-| `supports_end_to_end_agent` | boolean | 是否支持 agent 端到端 |
-| `judge_type` | enum | `exact_match`, `qrels_metric`, `llm_judge`, `human_vote`, `hybrid`, `unknown` |
-| `judge_model` | text/null | 如 GPT-4.1、Qwen3-32B |
-| `evaluation_script_public` | boolean/null | 评分脚本是否公开 |
-| `leaderboard_public` | boolean/null | 是否有公开 leaderboard |
-| `submission_mode` | enum | `local`, `hosted_leaderboard`, `email`, `unknown`, `not_applicable` |
-| `notes` | text/null | 客观说明 |
-
-### 2.9 `metrics`
-
-每个指标单独入库，便于前端筛选和 run metrics 对齐。
-
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | metric ID |
-| `benchmark_id` | text | 外键 |
-| `metric_name` | text | 如 `accuracy`, `recall@100`, `nDCG@10` |
-| `metric_family` | enum | `accuracy`, `ranking`, `retrieval`, `calibration`, `cost`, `trace`, `preference`, `structured_output` |
-| `higher_is_better` | boolean/null | 是否越高越好 |
-| `definition` | text/null | 官方定义或简短说明 |
-| `source_id` | text/null | 来源 |
-
-### 2.10 `automation_checks`
-
-自动化状态也要记录事实，不写“优先级”。
-
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | check ID |
-| `benchmark_id` | text | 外键 |
-| `check_type` | enum | `metadata_refresh`, `schema_sample`, `smoke_eval`, `full_eval`, `leaderboard_sync` |
-| `cadence` | enum | `weekly`, `monthly`, `release_triggered`, `manual` |
-| `credential_requirements` | json | 如 `hf_token`, `kaggle_token`, `search_api_key`, `model_api_key` |
-| `runner_available` | boolean | 是否已有 runner |
-| `last_run_at` | datetime/null | 最近一次运行 |
-| `last_run_status` | enum | `not_run`, `ok`, `failed`, `blocked`, `requires_review` |
-| `last_error` | text/null | 错误摘要 |
-
-### 2.11 `annotations`
-
-团队判断、产品映射、优先级都放这里，不进入核心事实表。
-
-| 字段 | 类型 | 含义 |
-|---|---|---|
-| `id` | text | annotation ID |
-| `entity_type` | enum | `benchmark`, `dataset`, `source`, `runner`, `metric` |
-| `entity_id` | text | 被标注实体 |
-| `annotation_type` | enum | `product_mapping`, `priority`, `owner_note`, `risk`, `decision` |
-| `content` | text/json | 标注内容 |
-| `basis` | text/null | 依据来源或理由 |
-| `author` | text/null | 作者 |
-| `created_at` | datetime | 创建时间 |
-| `valid_until` | datetime/null | 失效时间 |
-
-## 3. 前端信息架构
-
-前端默认展示客观信息：
-
-- Overview：名称、维护方、来源、发布日期、数据访问方式。
-- Dataset：split、行数、字段、语言、labels/qrels/traces 是否公开。
-- Search Protocol：live web / fixed corpus / browser navigation / agent pool，搜索提供方是否固定，是否记录 tool calls。
-- Evaluation Target：`search_api` 或 `agent_plus_search`，以及 search 在协议里的角色。
-- Evaluation：gold 类型、指标、judge 类型、是否有公开脚本和 leaderboard。
-- Automation：最近检查时间、抓取状态、需要的 credentials、runner 是否存在。
-- Sources：所有 source 的 URL、检查状态、hash/更新时间。
-
-可选展示团队标注，但要视觉上区别于事实：
-
-- Product mapping
-- Internal priority
-- Implementation notes
-- Risk notes
-
-## 4. 字段命名建议
-
-稳定枚举尽量用英文 snake_case；前端显示中文即可。
-
-避免把复杂事实写成自然语言 blob。比如：
-
-- 不要只存 `适合自动跑`
-- 应存 `evaluation_script_public=true`, `contains_public_labels=true`, `requires_model_api_key=true`, `runner_available=false`
-
-避免把团队判断混到事实字段。比如：
-
-- 不要在 `benchmarks` 表存 `priority=P0`
-- 可在 `annotations` 表存 `{annotation_type: "priority", content: "P0", basis: "..."}`
-
-## 5. 后续迁移顺序
-
-第一阶段只建事实库：
-
-1. `benchmarks`
-2. `benchmark_sources`
-3. `datasets`
-4. `dataset_splits`
-5. `task_designs`
-6. `search_protocols`
-7. `evaluation_methods`
-8. `metrics`
-9. `automation_checks`
-
-第二阶段加运行结果：
-
-1. `runs`
-2. `run_metrics`
-3. `run_artifacts`
-4. `sample_outputs`
-
-第三阶段加团队判断：
-
-1. `annotations`
-2. `watchlist_items`
-3. `decision_log`
+新增 benchmark、dataset、leaderboard 或 provider appearance 时，应先通过该校验，再进入前端和 PR review。
