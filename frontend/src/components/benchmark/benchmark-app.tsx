@@ -59,6 +59,17 @@ const modeLabels: Record<string, string> = {
   third_party_report: "第三方报告",
 };
 
+const evaluationTargetLabels: Record<string, string> = {
+  search_api: "search API",
+  agent_plus_search: "Agent + Search",
+};
+
+const searchComponentRoleLabels: Record<string, string> = {
+  primary_system_under_test: "被测对象",
+  tool_dependency: "任务工具",
+  fixed_protocol_dependency: "固定协议工具",
+};
+
 const sourceLabels: Record<string, string> = {
   paper: "论文",
   leaderboard: "leaderboard",
@@ -224,9 +235,9 @@ const detailTranslations: Record<string, string> = {
   "Tavily|Tavily Search Evals|supported_provider_in_eval_framework": "Tavily 的公开评测框架支持 Tavily、Exa、Brave、Google via Serper、Perplexity Search、Perplexity 和 GPTR，并包含 SimpleQA 与文档相关性评测。",
   "Exa|Tavily Search Evals|supported_provider_in_eval_framework": "Exa 是 Tavily 公开搜索 API 评测框架内置支持的服务商之一。",
   "Brave|Tavily Search Evals|supported_provider_in_eval_framework": "Brave 是 Tavily 公开搜索 API 评测框架内置支持的服务商之一。",
-  "Tavily|SimpleQA|vendor_claim": "Tavily 声称在 OpenAI SimpleQA 上达到 93.33% 准确率，流程使用 Tavily 实时搜索和 GPT-4.1 生成答案。",
+  "Tavily|Tavily Search Evals|vendor_claim": "Tavily 声称在 OpenAI SimpleQA 上达到 93.33% 准确率，流程使用 Tavily 实时搜索和 GPT-4.1 生成答案；静态 SimpleQA 本体不进入主库。",
   "Exa|SimpleQA / MSMARCO-style API eval|vendor_claim": "Exa 发布了 SimpleQA 和类 MSMARCO 搜索结果相关性评测。可访问文本更清楚展示了方法，具体表格数值暴露不完整。",
-  "Brave|SimpleQA|vendor_claim": "Brave 在 SimpleQA 风格指标上，将 Brave AI Grounding 与 Perplexity、Tavily、Exa 做了对比。",
+  "Brave|Brave SimpleQA Comparison|vendor_claim": "Brave 在 SimpleQA 风格指标上，将 Brave AI Grounding 与 Perplexity、Tavily、Exa 做了对比；静态 SimpleQA 本体不进入主库。",
   "Tavily|Brave SimpleQA Comparison|compared_provider": "Brave 发布的对比表列出 Tavily + GPT-4.1 的尝试作答准确率为 93.3%。该结果标记为厂商发布对比。",
   "Exa|Brave SimpleQA Comparison|compared_provider": "Brave 发布的对比表列出多个 Exa 相关 SimpleQA 数值。该结果标记为厂商发布对比。",
   "Brave|AIMultiple Agentic Search Benchmark|third_party_comparison": "AIMultiple 在 2026 agentic search benchmark 中报告 Brave Search 的 Agent Score 最高，并报告 669ms 延迟。",
@@ -384,10 +395,11 @@ function sourceFileName(file: string) {
 }
 
 function dataFor(data: BenchmarkData) {
+  const benchmarks = ((data.facts.benchmarks ?? []) as AnyRecord[]).filter((item) => item.inclusion_status !== "excluded");
   return {
-    benchmarks: (data.facts.benchmarks ?? []) as AnyRecord[],
+    benchmarks,
     snapshots: (data.results.snapshots ?? []) as AnyRecord[],
-    appearances: (data.competitors.appearances ?? []) as AnyRecord[],
+    appearances: ((data.competitors.appearances ?? []) as AnyRecord[]).filter((item) => item.inclusion_status !== "excluded"),
     trackedProviders: ((data.competitors.meta?.tracked_competitors as string[]) ?? ["Tavily", "Exa", "Brave"]) as string[],
     datasetPreviewById: (data.datasets.datasets ?? {}) as Record<string, AnyRecord>,
   };
@@ -436,6 +448,10 @@ function benchmarkForEvaluationName(name: string, benchmarks: AnyRecord[]) {
   return benchmarks.find((benchmark) => normalize(benchmark.canonical_name) === normalized);
 }
 
+function evaluationTargetText(value: unknown) {
+  return evaluationTargetLabels[String(value ?? "")] ?? "未记录";
+}
+
 function scoredLeaderboardRows(rows: AnyRecord[]): AnyRecord[] {
   return rows
     .filter((row) => row.score_or_metric)
@@ -478,13 +494,15 @@ function buildLeaderboardItems(benchmarks: AnyRecord[], snapshots: AnyRecord[], 
       return acc;
     }, {});
 
-  const competitorItems = Object.entries(grouped).map(([title, rows]) => {
+  const competitorItems = Object.entries(grouped).flatMap(([title, rows]) => {
+    const benchmark = benchmarkForEvaluationName(title, benchmarks);
+    if (!benchmark) return [];
     const scoreRows = scoredLeaderboardRows(rows);
-    return {
+    return [{
       kind: "competitor",
       id: `competitor-${slugify(title)}`,
       title,
-      benchmark_id: benchmarkForEvaluationName(title, benchmarks)?.id ?? null,
+      benchmark_id: benchmark.id,
       source_type: "reported_scores",
       source_url: rows[0]?.source_url,
       date: null,
@@ -493,7 +511,7 @@ function buildLeaderboardItems(benchmarks: AnyRecord[], snapshots: AnyRecord[], 
       rows,
       score_rows: scoreRows,
       tables: null,
-    };
+    }];
   });
 
   return [...snapshotItems, ...competitorItems];
@@ -519,6 +537,8 @@ function matchesBenchmark(benchmark: AnyRecord, query: string) {
     benchmark.maintainer_org,
     benchmark.benchmark_family,
     benchmark.search_protocol?.mode,
+    benchmark.evaluation_target,
+    benchmark.search_component_role,
     benchmark.search_protocol?.fixed_provider_name,
     ...(benchmark.evaluation?.metrics ?? []),
   ].map(normalize).join(" ");
@@ -712,7 +732,10 @@ function BenchmarkDetail({
             <h2 className="mt-1 break-words font-head text-2xl font-extrabold leading-tight">{benchmark.canonical_name}</h2>
             <p className="mt-1 text-sm text-[var(--querit-muted)]">{benchmark.maintainer_org ?? "维护方未记录"}</p>
           </div>
-          <Badge variant={protocol.mode === "live_web" ? "success" : "blue"}>{modeLabels[protocol.mode] ?? protocol.mode}</Badge>
+          <div className="flex shrink-0 flex-wrap justify-end gap-2">
+            <Badge variant={benchmark.evaluation_target === "search_api" ? "blue" : "purple"}>{evaluationTargetText(benchmark.evaluation_target)}</Badge>
+            <Badge variant={protocol.mode === "live_web" ? "success" : "blue"}>{modeLabels[protocol.mode] ?? protocol.mode}</Badge>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="grid gap-5">
@@ -721,10 +744,11 @@ function BenchmarkDetail({
         <FactGrid
           rows={[
             { label: "类别", value: familyLabels[benchmark.benchmark_family] ?? benchmark.benchmark_family },
+            { label: "评估对象", value: evaluationTargetText(benchmark.evaluation_target) },
+            { label: "search 角色", value: searchComponentRoleLabels[benchmark.search_component_role] ?? benchmark.search_component_role ?? "未记录" },
             { label: "搜索是否必需", value: boolText(protocol.search_required_for_evaluation) },
             { label: "检索器可替换", value: boolText(protocol.retriever_replaceable) },
             { label: "固定服务商", value: protocol.fixed_provider_name ?? "无" },
-            { label: "语言", value: languageText(dataset.languages) },
             { label: "leaderboard 公开", value: boolText(evaluation.leaderboard_public ?? evaluation.evaluation_script_public) },
           ]}
         />
@@ -818,20 +842,23 @@ function BenchmarkDirectory({
   query: string;
 }) {
   const { benchmarks, appearances, datasetPreviewById } = data;
+  const [target, setTarget] = useState("all");
   const [mode, setMode] = useState("all");
   const [retriever, setRetriever] = useState("all");
   const [selectedId, setSelectedId] = useState(String(benchmarks[0]?.id ?? ""));
+  const targets = unique(benchmarks.map((item) => item.evaluation_target as string));
   const modes = unique(benchmarks.map((item) => item.search_protocol?.mode as string));
 
   const filtered = benchmarks.filter((item) => {
     const replaceable = item.search_protocol?.retriever_replaceable;
+    const targetOk = target === "all" || item.evaluation_target === target;
     const modeOk = mode === "all" || item.search_protocol?.mode === mode;
     const retrieverOk =
       retriever === "all" ||
       (retriever === "replaceable" && replaceable === true) ||
       (retriever === "fixed" && replaceable === false) ||
       (retriever === "unknown" && replaceable !== true && replaceable !== false);
-    return modeOk && retrieverOk && matchesBenchmark(item, query);
+    return targetOk && modeOk && retrieverOk && matchesBenchmark(item, query);
   });
 
   const selected = filtered.find((item) => item.id === selectedId) ?? filtered[0];
@@ -845,6 +872,18 @@ function BenchmarkDirectory({
           <h2 className="mt-1 font-head text-xl font-extrabold">benchmark 目录</h2>
         </CardHeader>
         <CardContent className="grid gap-4 p-4">
+          <label className="grid gap-2 text-sm font-medium text-[var(--querit-soft-ink)]">
+            <span className="flex items-center gap-2 text-xs text-[var(--querit-muted)]">
+              <Network className="h-4 w-4" />
+              评估对象
+            </span>
+            <Select value={target} onChange={(event) => setTarget(event.target.value)} className="w-full">
+              <option value="all">全部评估对象</option>
+              {targets.map((item) => (
+                <option value={item} key={item}>{evaluationTargetText(item)}</option>
+              ))}
+            </Select>
+          </label>
           <label className="grid gap-2 text-sm font-medium text-[var(--querit-soft-ink)]">
             <span className="flex items-center gap-2 text-xs text-[var(--querit-muted)]">
               <ListFilter className="h-4 w-4" />
@@ -875,18 +914,18 @@ function BenchmarkDirectory({
               <strong className="font-head text-2xl font-extrabold">{filtered.length}</strong>
             </div>
             <div className="mt-3 grid gap-2 text-xs text-[var(--querit-soft-ink)]">
-              {modes.slice(0, 6).map((item) => (
+              {targets.map((item) => (
                 <button
                   key={item}
                   type="button"
-                  onClick={() => setMode(item)}
+                  onClick={() => setTarget(item)}
                   className={cn(
                     "flex items-center justify-between rounded-[9px] px-2.5 py-2 text-left transition hover:bg-white",
-                    mode === item && "bg-white shadow-[inset_3px_0_0_var(--querit-cyan)]",
+                    target === item && "bg-white shadow-[inset_3px_0_0_var(--querit-cyan)]",
                   )}
                 >
-                  <span>{modeLabels[item] ?? item}</span>
-                  <span>{benchmarks.filter((benchmark) => benchmark.search_protocol?.mode === item).length}</span>
+                  <span>{evaluationTargetText(item)}</span>
+                  <span>{benchmarks.filter((benchmark) => benchmark.evaluation_target === item).length}</span>
                 </button>
               ))}
             </div>
@@ -902,6 +941,12 @@ function BenchmarkDirectory({
               <h2 className="mt-1 font-head text-xl font-extrabold">benchmark records</h2>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row 2xl:hidden">
+              <Select value={target} onChange={(event) => setTarget(event.target.value)}>
+                <option value="all">全部评估对象</option>
+                {targets.map((item) => (
+                  <option value={item} key={item}>{evaluationTargetText(item)}</option>
+                ))}
+              </Select>
               <Select value={mode} onChange={(event) => setMode(event.target.value)}>
                 <option value="all">全部模式</option>
                 {modes.map((item) => (
@@ -941,6 +986,9 @@ function BenchmarkDirectory({
                     <span className="min-w-0">
                       <span className="flex flex-wrap items-center gap-2">
                         <strong className="text-base font-bold text-[var(--querit-ink)]">{item.canonical_name}</strong>
+                        <Badge variant={item.evaluation_target === "search_api" ? "blue" : "purple"}>
+                          {evaluationTargetText(item.evaluation_target)}
+                        </Badge>
                         <Badge variant={item.search_protocol?.mode === "live_web" ? "success" : "muted"}>
                           {modeLabels[item.search_protocol?.mode] ?? item.search_protocol?.mode}
                         </Badge>
@@ -960,6 +1008,10 @@ function BenchmarkDirectory({
                     <Badge>
                       检索器：
                       {item.search_protocol?.retriever_replaceable === true ? "可替换" : item.search_protocol?.retriever_replaceable === false ? "不可替换" : "不适用"}
+                    </Badge>
+                    <Badge variant="muted">
+                      search：
+                      {searchComponentRoleLabels[item.search_component_role] ?? item.search_component_role ?? "未记录"}
                     </Badge>
                     {item.search_protocol?.fixed_provider_name ? <Badge variant="muted">{item.search_protocol.fixed_provider_name}</Badge> : null}
                     <ProviderBadges providers={providers} />
@@ -1219,8 +1271,8 @@ export function BenchmarkApp({ data }: { data: BenchmarkData }) {
   const [query, setQuery] = useState("");
 
   const leaderboardCount = useMemo(() => buildLeaderboardItems(benchmarks, snapshots, appearances).length, [benchmarks, snapshots, appearances]);
-  const liveWeb = benchmarks.filter((item) => item.search_protocol?.mode === "live_web").length;
-  const sampledDatasets = benchmarks.filter((item) => datasetPreview(datasetPreviewById, item.id).status === "sampled").length;
+  const searchApiCount = benchmarks.filter((item) => item.evaluation_target === "search_api").length;
+  const agentSearchCount = benchmarks.filter((item) => item.evaluation_target === "agent_plus_search").length;
   const sourceCount = benchmarks.reduce((sum, item) => sum + (item.sources?.length ?? 0), 0) + snapshots.length + appearances.length;
   const updatedAt = String(data.facts.meta?.generated_at ?? "2026-07-09");
 
@@ -1287,8 +1339,8 @@ export function BenchmarkApp({ data }: { data: BenchmarkData }) {
           </div>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             <StatCard icon={Layers3} label="benchmark" value={benchmarks.length} caption="已收录" />
-            <StatCard icon={Globe2} label="实时网页" value={liveWeb} caption="模式" />
-            <StatCard icon={Database} label="dataset 样例" value={sampledDatasets} caption="已接入" />
+            <StatCard icon={Database} label="search API" value={searchApiCount} caption="纯评估" />
+            <StatCard icon={Globe2} label="Agent + Search" value={agentSearchCount} caption="任务评估" />
             <StatCard icon={BarChart3} label="leaderboard" value={leaderboardCount} caption={`来源 ${sourceCount}`} />
           </div>
         </section>

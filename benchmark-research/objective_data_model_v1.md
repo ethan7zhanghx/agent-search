@@ -7,6 +7,7 @@
 后续前端和数据库应尽量作为事实库，而不是观点库。核心表只记录可追溯事实：
 
 - benchmark 官方名称、来源、论文、代码、数据集、license。
+- benchmark 是否进入主库，以及它评估的是 `search_api` 还是 `agent_plus_search`。
 - 数据集 split、文件路径、字段、样本数量、语言、更新时间。
 - 任务输入/输出格式、gold 类型、是否包含 qrels、是否包含 hidden test。
 - search / retrieval / browsing / agent pool 在评估协议中的位置。
@@ -23,6 +24,27 @@
 
 如果确实需要展示判断，建议做成独立表 `annotations`，并保存作者、时间、依据和适用场景。
 
+## 1.1 主库收录规则
+
+主库只收两类 benchmark：
+
+| `evaluation_target` | 含义 | 收录条件 |
+|---|---|---|
+| `search_api` | Search API、search engine、retriever 或 provider 本身是被测对象 | 搜索结果质量、排序、召回、相关性、覆盖度、延迟或 provider score 会直接影响评分 |
+| `agent_plus_search` | Agent / LLM 使用 search 作为工具完成任务 | Search 工具调用、搜索结果质量或搜索策略会真实影响最终任务评分 |
+
+以下类型不进入主库，放入 `excluded_benchmarks_v1.json`：
+
+| `exclusion_reason` | 含义 |
+|---|---|
+| `provided_context_only` | benchmark 提供了搜索后的材料、trace 或 evidence，评估时不需要 search API 参与 |
+| `no_search_dependency` | benchmark 本身是静态 QA / 阅读理解 / 模型能力评估，search 不是协议要求 |
+| `out_of_scope` | 文章、观点、产品对比或无法形成独立 benchmark/evaluation 条目的材料 |
+
+主库判断原则：
+
+> 只有 search 结果质量、search API 行为，或 agent 对 search 工具的使用会实质影响最终评分的 benchmark，才进入主库。
+
 ## 2. 核心实体
 
 ### 2.1 `benchmarks`
@@ -35,6 +57,11 @@
 | `canonical_name` | text | 官方或最常用名称 |
 | `short_name` | text | 简称 |
 | `description` | text | 客观简介，避免评价性词汇 |
+| `inclusion_status` | enum | `included`, `excluded`, `pending_review` |
+| `evaluation_target` | enum/null | `search_api`, `agent_plus_search`；仅主库 included 条目必填 |
+| `search_component_role` | enum/null | `primary_system_under_test`, `tool_dependency`, `fixed_protocol_dependency` |
+| `evaluation_target_rationale` | text/null | 该分类的客观依据 |
+| `exclusion_reason` | enum/null | excluded 条目的排除原因 |
 | `benchmark_family` | enum/text | 如 `live_web_search`, `fixed_corpus_retrieval`, `agent_discovery` |
 | `first_released_year` | integer/null | 首次发布年份 |
 | `maintainer_org` | text/null | 维护方 |
@@ -131,13 +158,13 @@ split 是前端和自动化最常用的筛选维度。
 
 ### 2.7 `search_protocols`
 
-这是区分“真 search benchmark”和“只是 RAG/QA”的关键表。
+这是区分“真 search benchmark”和“只是 RAG/QA/阅读理解”的关键表。
 
 | 字段 | 类型 | 含义 |
 |---|---|---|
 | `id` | text | protocol ID |
 | `benchmark_id` | text | 外键 |
-| `mode` | enum | `live_web`, `fixed_corpus`, `browser_navigation`, `state_gated_site`, `agent_pool`, `trace_dataset`, `provided_evidence` |
+| `mode` | enum | `live_web`, `fixed_corpus`, `browser_navigation`, `state_gated_site`, `agent_pool`, `trace_dataset`, `search_api_eval_framework`, `vendor_comparison`, `third_party_report` |
 | `search_required_for_evaluation` | boolean | 评估时 search 是否参与 |
 | `search_provider_policy` | enum | `fixed_provider`, `user_provided`, `not_applicable`, `unknown` |
 | `fixed_provider_name` | text/null | 如 Brave、Tavily |
@@ -217,6 +244,7 @@ split 是前端和自动化最常用的筛选维度。
 - Overview：名称、维护方、来源、发布日期、数据访问方式。
 - Dataset：split、行数、字段、语言、labels/qrels/traces 是否公开。
 - Search Protocol：live web / fixed corpus / browser navigation / agent pool，搜索提供方是否固定，是否记录 tool calls。
+- Evaluation Target：`search_api` 或 `agent_plus_search`，以及 search 在协议里的角色。
 - Evaluation：gold 类型、指标、judge 类型、是否有公开脚本和 leaderboard。
 - Automation：最近检查时间、抓取状态、需要的 credentials、runner 是否存在。
 - Sources：所有 source 的 URL、检查状态、hash/更新时间。

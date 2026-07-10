@@ -20,6 +20,7 @@ Search API / Agent Search benchmark 资料库与前端页面。
 核心数据位于 `benchmark-research/`：
 
 - `objective_benchmark_facts_v1.json`：benchmark 主表。
+- `excluded_benchmarks_v1.json`：已审阅但不进入主库的 benchmark / evaluation。
 - `dataset_samples_v1.json`：dataset 与样例任务。
 - `public_result_snapshots_v1.json`：公开结果快照。
 - `competitor_visibility_v1.json`：服务商公开 evaluation / benchmark 出现记录。

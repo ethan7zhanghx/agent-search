@@ -1,13 +1,18 @@
 {
   "meta": {
-    "schema_version": "0.2.0",
+    "schema_version": "0.3.0",
     "generated_at": "2026-07-09",
     "language": "zh-CN",
-    "purpose": "Objective benchmark facts for future database/frontend import. Product opinions and priorities are intentionally excluded.",
+    "purpose": "Objective benchmark facts for future database/frontend import. Main benchmark entries include only search_api or agent_plus_search evaluations; excluded records are stored separately.",
     "related_docs": [
       "benchmark-research/objective_data_model_v1.md",
       "benchmark-research/initial_runner_specs_v1.md",
       "benchmark-research/deep_audit_v1.md"
+    ],
+    "inclusion_policy": "Only benchmarks where search result quality, search API behavior, or agent use of search materially affects scoring are included in the main registry.",
+    "evaluation_target_values": [
+      "search_api",
+      "agent_plus_search"
     ]
   },
   "benchmarks": [
@@ -113,7 +118,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "fixed_protocol_dependency",
+      "evaluation_target_rationale": "Scores end-to-end answer quality for models using a fixed Brave Search tool; the search API is protocol infrastructure rather than a replaceable system under test."
     },
     {
       "id": "browsecomp",
@@ -207,7 +216,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "tool_dependency",
+      "evaluation_target_rationale": "Evaluates an agent/model answering difficult questions with web browsing or search as a tool dependency."
     },
     {
       "id": "livenewsbench",
@@ -320,7 +333,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "tool_dependency",
+      "evaluation_target_rationale": "Evaluates live-news QA with bounded searches and clicks, where search use affects final answer quality."
     },
     {
       "id": "browsecomp_plus",
@@ -420,7 +437,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "tool_dependency",
+      "evaluation_target_rationale": "Supports retrieval metrics, but the benchmark design also evaluates end-to-end agent QA over a fixed corpus with search/get_document tools."
     },
     {
       "id": "widesearch",
@@ -513,7 +534,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "tool_dependency",
+      "evaluation_target_rationale": "Evaluates wide information-seeking task completion where search is required to gather evidence for final structured answers."
     },
     {
       "id": "deepsearchqa",
@@ -606,7 +631,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "tool_dependency",
+      "evaluation_target_rationale": "Evaluates deep search question answering with search-enabled agents or models."
     },
     {
       "id": "sgr_bench",
@@ -688,7 +717,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "tool_dependency",
+      "evaluation_target_rationale": "Evaluates retrieval through state-gated interfaces where navigation/search behavior affects task completion."
     },
     {
       "id": "agentsearchbench",
@@ -793,7 +826,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "search_api",
+      "search_component_role": "primary_system_under_test",
+      "evaluation_target_rationale": "Evaluates agent/task retrieval from an agent pool with qrels-style ranking metrics; retrieval is the primary system under test."
     },
     {
       "id": "miracl",
@@ -880,87 +917,11 @@
           ],
           "runner_available": false
         }
-      }
-    },
-    {
-      "id": "search_arena",
-      "canonical_name": "Search Arena",
-      "benchmark_family": "search_augmented_llm_behavior",
-      "maintainer_org": "LMArena",
-      "sources": [
-        {
-          "source_type": "paper",
-          "url": "https://arxiv.org/html/2506.05334v1",
-          "access_mode": "public"
-        },
-        {
-          "source_type": "github",
-          "url": "https://github.com/lmarena/search-arena",
-          "access_mode": "public"
-        },
-        {
-          "source_type": "dataset",
-          "url": "https://huggingface.co/datasets/lmarena-ai/search-arena-24k",
-          "access_mode": "public"
-        }
-      ],
-      "dataset_facts": {
-        "conversation_count": 24069,
-        "human_preference_vote_count": 12652,
-        "user_count_claim": "about 11000",
-        "country_count_claim": 136,
-        "model_count_claim": 13,
-        "language_count_claim": "about 90",
-        "contains_search_traces": true,
-        "file_observed": "data/search-arena-chat-24k.parquet",
-        "file_size_bytes_observed": 400678009
       },
-      "task_design": {
-        "task_input_type": "conversation",
-        "expected_output_type": "preference_pair",
-        "gold_type": "human_vote",
-        "requires_fresh_information": null,
-        "requires_multihop": null,
-        "requires_structured_output": false
-      },
-      "search_protocol": {
-        "mode": "trace_dataset",
-        "search_required_for_evaluation": false,
-        "search_provider_policy": "not_applicable",
-        "retriever_replaceable": false,
-        "tool_schema_public": null,
-        "records_tool_calls": true,
-        "records_search_count": true,
-        "records_click_count": null
-      },
-      "evaluation": {
-        "judge_type": "human_vote",
-        "metrics": [
-          "preference_win_rate",
-          "bradley_terry_score",
-          "citation_features"
-        ],
-        "supports_retrieval_only": false,
-        "supports_end_to_end_agent": false,
-        "leaderboard_public": false
-      },
-      "automation_checks": {
-        "metadata_refresh": {
-          "cadence": "weekly",
-          "credentials": [],
-          "runner_available": true
-        },
-        "schema_sample": {
-          "cadence": "manual",
-          "credentials": [],
-          "runner_available": false
-        },
-        "smoke_eval": {
-          "cadence": "not_applicable",
-          "credentials": [],
-          "runner_available": false
-        }
-      }
+      "inclusion_status": "included",
+      "evaluation_target": "search_api",
+      "search_component_role": "primary_system_under_test",
+      "evaluation_target_rationale": "Evaluates multilingual retrieval over fixed corpora with ranking metrics; retriever/search quality is the system under test."
     },
     {
       "id": "tavily_search_evals",
@@ -1061,106 +1022,11 @@
           ],
           "runner_available": false
         }
-      }
-    },
-    {
-      "id": "simpleqa",
-      "canonical_name": "SimpleQA",
-      "record_type": "benchmark",
-      "benchmark_family": "short_form_factual_qa",
-      "maintainer_org": "OpenAI",
-      "sources": [
-        {
-          "source_type": "website",
-          "url": "https://openai.com/index/introducing-simpleqa/",
-          "access_mode": "public"
-        },
-        {
-          "source_type": "paper",
-          "url": "https://arxiv.org/html/2411.04368v1",
-          "access_mode": "public"
-        },
-        {
-          "source_type": "github",
-          "url": "https://github.com/openai/simple-evals/blob/main/simpleqa_eval.py",
-          "access_mode": "public"
-        },
-        {
-          "source_type": "dataset",
-          "url": "https://openaipublic.blob.core.windows.net/simple-evals/simple_qa_test_set.csv",
-          "access_mode": "public"
-        },
-        {
-          "source_type": "leaderboard",
-          "url": "https://www.kaggle.com/benchmarks/openai/simpleqa/leaderboard",
-          "access_mode": "public"
-        }
-      ],
-      "dataset_facts": {
-        "record_count": 4326,
-        "record_count_basis": "computed_from_public_csv",
-        "file_format": "csv",
-        "fields": [
-          "metadata",
-          "problem",
-          "answer"
-        ],
-        "languages": [
-          "en"
-        ],
-        "contains_public_labels": true
       },
-      "task_design": {
-        "task_input_type": "question",
-        "expected_output_type": "short_answer",
-        "gold_type": "answer_key",
-        "requires_fresh_information": false,
-        "requires_multihop": false,
-        "requires_structured_output": false
-      },
-      "search_protocol": {
-        "mode": "static_qa",
-        "search_required_for_evaluation": false,
-        "search_provider_policy": "not_applicable",
-        "fixed_provider_name": null,
-        "retriever_replaceable": null,
-        "tool_schema_public": false,
-        "records_search_count": false,
-        "records_click_count": false,
-        "records_tool_calls": false
-      },
-      "evaluation": {
-        "judge_type": "llm_judge",
-        "metrics": [
-          "accuracy",
-          "attempted_accuracy",
-          "f1"
-        ],
-        "supports_retrieval_only": false,
-        "supports_end_to_end_agent": false,
-        "evaluation_script_public": true,
-        "leaderboard_public": true
-      },
-      "automation_checks": {
-        "metadata_refresh": {
-          "cadence": "weekly",
-          "credentials": [],
-          "runner_available": true
-        },
-        "schema_sample": {
-          "cadence": "weekly",
-          "credentials": [],
-          "runner_available": true
-        },
-        "smoke_eval": {
-          "cadence": "manual",
-          "credentials": [
-            "model_api_key",
-            "judge_model_api_key"
-          ],
-          "runner_available": false
-        }
-      }
+      "inclusion_status": "included",
+      "evaluation_target": "search_api",
+      "search_component_role": "primary_system_under_test",
+      "evaluation_target_rationale": "A provider-selectable search API evaluation framework where Tavily, Exa, Brave and other providers can be compared."
     },
     {
       "id": "exa_api_evals",
@@ -1239,7 +1105,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "search_api",
+      "search_component_role": "primary_system_under_test",
+      "evaluation_target_rationale": "Vendor-published API evaluation for search result quality and SimpleQA-style search-backed answering."
     },
     {
       "id": "brave_simpleqa_comparison",
@@ -1313,7 +1183,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "primary_system_under_test",
+      "evaluation_target_rationale": "Vendor-published comparison of Brave AI Grounding/search-backed answering against other providers on SimpleQA-style metrics."
     },
     {
       "id": "aimultiple_agentic_search_benchmark",
@@ -1387,7 +1261,11 @@
           ],
           "runner_available": false
         }
-      }
+      },
+      "inclusion_status": "included",
+      "evaluation_target": "search_api",
+      "search_component_role": "primary_system_under_test",
+      "evaluation_target_rationale": "Third-party comparison scores agentic search providers directly, including Brave, Exa and Tavily."
     },
     {
       "id": "wiser_search",
@@ -1455,77 +1333,11 @@
           ],
           "runner_available": false
         }
-      }
-    },
-    {
-      "id": "parallel_comparison_article",
-      "canonical_name": "Parallel comparison article",
-      "record_type": "vendor_published_article",
-      "benchmark_family": "vendor_published_comparison",
-      "maintainer_org": "Parallel",
-      "sources": [
-        {
-          "source_type": "article",
-          "url": "https://parallel.ai/articles/openai-web-search-vs-parallel-vs-exa-vs-tavily-how-to-choose",
-          "access_mode": "public"
-        }
-      ],
-      "dataset_facts": {
-        "record_count_basis": "not_applicable_comparison_article",
-        "source_datasets_observed": [
-          "SimpleQA",
-          "FreshQA"
-        ],
-        "contains_public_examples": null,
-        "languages": [
-          "en"
-        ]
       },
-      "task_design": {
-        "task_input_type": "not_applicable_article",
-        "expected_output_type": "reported_comparison",
-        "gold_type": "not_applicable_article",
-        "requires_fresh_information": null,
-        "requires_multihop": null,
-        "requires_structured_output": false
-      },
-      "search_protocol": {
-        "mode": "vendor_comparison",
-        "search_required_for_evaluation": null,
-        "search_provider_policy": "vendor_published_article",
-        "fixed_provider_name": null,
-        "retriever_replaceable": null,
-        "tool_schema_public": null,
-        "records_search_count": null,
-        "records_click_count": null,
-        "records_tool_calls": null
-      },
-      "evaluation": {
-        "judge_type": "reported_claims",
-        "metrics": [
-          "claimed benchmark values"
-        ],
-        "supports_retrieval_only": null,
-        "supports_end_to_end_agent": null,
-        "evaluation_script_public": null
-      },
-      "automation_checks": {
-        "metadata_refresh": {
-          "cadence": "weekly",
-          "credentials": [],
-          "runner_available": true
-        },
-        "schema_sample": {
-          "cadence": "not_applicable",
-          "credentials": [],
-          "runner_available": false
-        },
-        "smoke_eval": {
-          "cadence": "not_applicable",
-          "credentials": [],
-          "runner_available": false
-        }
-      }
+      "inclusion_status": "included",
+      "evaluation_target": "agent_plus_search",
+      "search_component_role": "tool_dependency",
+      "evaluation_target_rationale": "Compares MCP/tool-calling search systems inside LLM answer generation; search tool quality affects final accuracy."
     }
   ]
 }
